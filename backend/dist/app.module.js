@@ -12,6 +12,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './users/module/user.module.js';
 import { AuthModule } from './auth/module/auth.module.js';
+import { FolderModule } from './folders/module/folder.module.js';
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 let AppModule = class AppModule {
 };
@@ -27,6 +28,7 @@ AppModule = __decorate([
             }),
             UserModule,
             AuthModule,
+            FolderModule,
             ObserveModule.forRoot({
                 appKey: 'YOUR_APP_KEY',
                 appSecret: 'YOUR_APP_SECRET',

@@ -7,6 +7,7 @@ import { inject } from 'vitest';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './users/module/user.module.js';
 import { AuthModule } from './auth/module/auth.module.js';
+import { FolderModule } from './folders/module/folder.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -23,12 +24,15 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     }),
     UserModule,
     AuthModule,
+    FolderModule,
     ObserveModule.forRoot({
       appKey: 'YOUR_APP_KEY',
       appSecret: 'YOUR_APP_SECRET',
       serviceId: 'backend',
     }),
   ],
+
+  
   controllers: [AppController],
   providers: [AppService],
 })
