@@ -45,7 +45,7 @@ let FileService = FileService_1 = class FileService {
         return { name, fileType: ext === '.md' ? FileType.MD : FileType.TXT };
     }
     async getOwned(ownerId, id) {
-        const file = await this.fileModel.findOne({ idFile: id, ownerId, deletedAt: null });
+        const file = await this.fileModel.findOne({ _id: id, ownerId, deletedAt: null });
         if (!file)
             throw new NotFoundException('Archivo no encontrado');
         return file;
@@ -73,6 +73,9 @@ let FileService = FileService_1 = class FileService {
             await this.gridFs.remove(gridFsId);
             throw e;
         }
+    }
+    findById(id) {
+        return this.fileModel.findOne({ _id: id, deletedAt: null });
     }
     async list(ownerId, listFileQueryDto) {
         const filter = { ownerId, deletedAt: null };

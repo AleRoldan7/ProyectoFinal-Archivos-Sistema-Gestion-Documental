@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import mongoose, { Connection } from 'mongoose';
+import mongoose from 'mongoose';
 let GridFsService = class GridFsService {
     connection;
     bucket;
@@ -46,7 +46,7 @@ let GridFsService = class GridFsService {
 GridFsService = __decorate([
     Injectable(),
     __param(0, InjectConnection()),
-    __metadata("design:paramtypes", [Connection])
+    __metadata("design:paramtypes", [mongoose.Connection])
 ], GridFsService);
 export { GridFsService };
 //# sourceMappingURL=gridfs-service.service.js.map

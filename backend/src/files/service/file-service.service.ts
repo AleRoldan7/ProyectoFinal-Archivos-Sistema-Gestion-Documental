@@ -11,8 +11,8 @@ import { ListFileQueryDTO } from '../dto/list-file-query.dto.js';
 
 @Injectable()
 export class FileService {
-    constructor(@InjectModel(FileEntry.name) private readonly fileModel: Model<FileEntryDocument>, private readonly gridFs: GridFsService, 
-    private readonly folders: FolderService) {}
+    constructor(@InjectModel(FileEntry.name) private readonly fileModel: Model<FileEntryDocument>, private readonly gridFs: GridFsService,
+        private readonly folders: FolderService) { }
 
     static decodeName(originalname: string) {
         return Buffer.from(originalname, 'latin1').toString('utf8').trim();
@@ -31,8 +31,8 @@ export class FileService {
         return { name, fileType: ext === '.md' ? FileType.MD : FileType.TXT };
     }
 
-    async getOwned(ownerId: string, id: string) {
-        const file = await this.fileModel.findOne({ idFile: id, ownerId, deletedAt: null });
+    async getOwned(ownerId?: string, id?: string) {
+        const file = await this.fileModel.findOne({ _id: id, ownerId, deletedAt: null });
         if (!file) throw new NotFoundException('Archivo no encontrado');
         return file;
     }
@@ -60,9 +60,13 @@ export class FileService {
                 mimeType: MIME_BY_TYPE[fileType], size: file!.size, gridFsId,
             });
         } catch (e) {
-            await this.gridFs.remove(gridFsId); 
+            await this.gridFs.remove(gridFsId);
             throw e;
         }
+    }
+
+    findById(id: string) {
+        return this.fileModel.findOne({ _id: id, deletedAt: null });
     }
 
     async list(ownerId: string, listFileQueryDto: ListFileQueryDTO) {
@@ -70,7 +74,7 @@ export class FileService {
 
         if (listFileQueryDto.folderId === 'root') filter.folderId = null;
         else if (listFileQueryDto.folderId) {
-            await this.folders.getOwned(ownerId, listFileQueryDto.folderId); 
+            await this.folders.getOwned(ownerId, listFileQueryDto.folderId);
             filter.folderId = listFileQueryDto.folderId;
         }
 
@@ -84,7 +88,7 @@ export class FileService {
             if (listFileQueryDto.from) filter.createdAt.$gte = new Date(listFileQueryDto.from);
             if (listFileQueryDto.to) {
                 const to = new Date(listFileQueryDto.to);
-                if (listFileQueryDto.to.length === 10) to.setUTCHours(23, 59, 59, 999); 
+                if (listFileQueryDto.to.length === 10) to.setUTCHours(23, 59, 59, 999);
                 filter.createdAt.$lte = to;
             }
         }
@@ -105,8 +109,8 @@ export class FileService {
         return { file, stream: this.gridFs.download(file.gridFsId) };
     }
 
-    async replaceContent(ownerId: string, id: string, upload: Express.Multer.File | undefined) {
-        const file = await this.getOwned(ownerId, id);
+    async replaceContent(id: string, upload: Express.Multer.File | undefined) {
+        const file = await this.getOwned(id);
         this.validateUpload(upload);
 
         const newId = await this.gridFs.upload(upload!.buffer, file.name, file.mimeType);
@@ -114,7 +118,7 @@ export class FileService {
         try {
             file.gridFsId = newId;
             file.size = upload!.size;
-            await file.save(); 
+            await file.save();
         } catch (e) {
             await this.gridFs.remove(newId);
             throw e;

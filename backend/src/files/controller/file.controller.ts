@@ -9,6 +9,8 @@ import { MoveFileDTO } from '../dto/move-file.dto.js';
 import { ALLOWED_EXTENSIONS, MAX_FILE_SIZE_BYTES } from '../../common/enums/files.enum.js';
 import { FileService } from '../service/file-service.service.js';
 import { ListFileQueryDTO } from '../dto/list-file-query.dto.js';
+import { Permission, ResourceType } from '../../common/enums/shraing.enum.js';
+import { AccessService } from '../../sharing/service/access.service.js';
 
 const uploadInterceptor = FileInterceptor('file', {
     limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 },
@@ -22,7 +24,7 @@ const uploadInterceptor = FileInterceptor('file', {
 @Controller('files')
 export class FileController {
 
-    constructor(private readonly files: FileService) { }
+    constructor(private readonly files: FileService, private readonly access: AccessService) { }
 
     @Post('upload-file')
     @UseInterceptors(uploadInterceptor)
@@ -35,9 +37,11 @@ export class FileController {
         return this.files.list(user.idUser, listFileQueryDto);
     }
 
+
     @Get(':id')
-    getOne(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
-        return this.files.getOwned(user.idUser, id);
+    async getOne(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
+        await this.access.require(user.idUser, ResourceType.FILE, id, Permission.READ);
+        return this.files.findById(id);
     }
 
     @Get(':id/download')
@@ -50,10 +54,11 @@ export class FileController {
         });
     }
 
+    
     @Put(':id/content')
-    @UseInterceptors(uploadInterceptor)
-    replaceContent(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string, @UploadedFile() file: Express.Multer.File) {
-        return this.files.replaceContent(user.idUser, id, file);
+    async replaceContent(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string, @UploadedFile() file: Express.Multer.File) {
+        await this.access.require(user.idUser, ResourceType.FILE, id, Permission.EDIT);
+        return this.files.replaceContent(id, file); 
     }
 
     @Patch(':id/rename')

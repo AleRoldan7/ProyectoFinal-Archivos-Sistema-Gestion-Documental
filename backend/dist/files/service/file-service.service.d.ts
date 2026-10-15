@@ -41,6 +41,41 @@ export declare class FileService {
     } & Required<{
         _id: mongoose.Types.ObjectId;
     }>>;
+    findById(id: string): mongoose.Query<(mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }, {}, mongoose.DefaultSchemaOptions> & mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & Required<{
+        _id: mongoose.Types.ObjectId;
+    }>) | null, mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }, {}, mongoose.DefaultSchemaOptions> & mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & Required<{
+        _id: mongoose.Types.ObjectId;
+    }>, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }, "findOne", {}>;
     list(ownerId: string, listFileQueryDto: ListFileQueryDTO): Promise<{
         items: (mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
             _id: mongoose.Types.ObjectId;

@@ -6,7 +6,7 @@ import mongoose, { Connection } from 'mongoose';
 export class GridFsService {
     private bucket?: mongoose.mongo.GridFSBucket;
 
-    constructor(@InjectConnection() private readonly connection: Connection) { }
+    constructor(@InjectConnection() private readonly connection: mongoose.Connection) { }
 
     private get buckets() {
         this.bucket ??= new mongoose.mongo.GridFSBucket(this.connection.db!, { bucketName: 'file_contents' });

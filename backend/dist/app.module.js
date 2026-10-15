@@ -13,6 +13,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './users/module/user.module.js';
 import { AuthModule } from './auth/module/auth.module.js';
 import { FolderModule } from './folders/module/folder.module.js';
+import { FileModule } from './files/module/file.module.js';
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 let AppModule = class AppModule {
 };
@@ -29,6 +30,7 @@ AppModule = __decorate([
             UserModule,
             AuthModule,
             FolderModule,
+            FileModule,
             ObserveModule.forRoot({
                 appKey: 'YOUR_APP_KEY',
                 appSecret: 'YOUR_APP_SECRET',
