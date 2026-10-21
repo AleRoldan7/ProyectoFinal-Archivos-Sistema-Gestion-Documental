@@ -1,6 +1,6 @@
 <main class="login-page">
   <section class="login-card">
-    <h1>Gestión documental</h1>
+    <h1>Gestor de archivos</h1>
     <p>Ingresa a tu cuenta para continuar.</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="submit()">
@@ -36,12 +36,12 @@
         <small>La contraseña es obligatoria.</small>
       }
 
-      @if (errorMessage) {
-        <p class="error-message">{{ errorMessage }}</p>
+      @if (errorMessage()) {
+        <p class="error-message">{{ errorMessage() }}</p>
       }
 
-      <button type="submit" [disabled]="loading">
-        {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Ingresando...' : 'Iniciar sesión' }}
       </button>
     </form>
   </section>

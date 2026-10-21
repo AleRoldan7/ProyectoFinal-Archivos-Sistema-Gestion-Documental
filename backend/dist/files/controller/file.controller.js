@@ -20,6 +20,10 @@ import { MoveFileDTO } from '../dto/move-file.dto.js';
 import { ALLOWED_EXTENSIONS, MAX_FILE_SIZE_BYTES } from '../../common/enums/files.enum.js';
 import { FileService } from '../service/file-service.service.js';
 import { ListFileQueryDTO } from '../dto/list-file-query.dto.js';
+import { Permission, ResourceType } from '../../common/enums/shraing.enum.js';
+import { AccessService } from '../../sharing/service/access.service.js';
+import { ActivityService } from '../../activity/service/activity.service.js';
+import { ActionActivity } from '../../common/enums/action-activity.enum.js';
 const uploadInterceptor = FileInterceptor('file', {
     limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 },
     fileFilter: (request, file, cb) => {
@@ -30,34 +34,50 @@ const uploadInterceptor = FileInterceptor('file', {
 });
 let FileController = class FileController {
     files;
-    constructor(files) {
+    access;
+    activity;
+    constructor(files, access, activity) {
         this.files = files;
+        this.access = access;
+        this.activity = activity;
     }
-    upload(user, file, dto) {
-        return this.files.upload(user.idUser, dto.folderId, file);
+    async upload(user, file, dto) {
+        const creado = await this.files.upload(user.idUser, dto.folderId, file);
+        await this.activity.register(user.idUser, ActionActivity.UPLOAD_FILE, 'FILE', creado.id, creado.name);
+        return creado;
     }
     list(user, listFileQueryDto) {
         return this.files.list(user.idUser, listFileQueryDto);
     }
-    getOne(user, id) {
-        return this.files.getOwned(user.idUser, id);
+    async getOne(user, id) {
+        await this.access.require(user.idUser, ResourceType.FILE, id, Permission.READ);
+        return this.files.findById(id);
     }
     async download(user, id) {
-        const { file, stream } = await this.files.download(user.idUser, id);
+        await this.access.require(user.idUser, ResourceType.FILE, id, Permission.READ);
+        const { file, stream } = await this.files.download(id);
+        await this.activity.register(user.idUser, ActionActivity.DOWNLOAD_FILE, 'FILE', id, file.name);
         return new StreamableFile(stream, {
             type: `${file.mimeType}; charset=utf-8`,
             disposition: `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`,
             length: file.size,
         });
     }
-    replaceContent(user, id, file) {
-        return this.files.replaceContent(user.idUser, id, file);
+    async replaceContent(user, id, file) {
+        await this.access.require(user.idUser, ResourceType.FILE, id, Permission.EDIT);
+        const actualizado = await this.files.replaceContent(id, file);
+        await this.activity.register(user.idUser, ActionActivity.EDIT_FILE, 'FILE', id, actualizado.name);
+        return actualizado;
     }
-    rename(user, id, dto) {
-        return this.files.rename(user.idUser, id, dto.name);
+    async rename(user, id, dto) {
+        const actualizado = await this.files.rename(user.idUser, id, dto.name);
+        await this.activity.register(user.idUser, ActionActivity.RENAME_FILE, 'FILE', id, actualizado.name);
+        return actualizado;
     }
-    move(user, id, dto) {
-        return this.files.move(user.idUser, id, dto.folderId);
+    async move(user, id, dto) {
+        const actualizado = await this.files.move(user.idUser, id, dto.folderId);
+        await this.activity.register(user.idUser, ActionActivity.MOVE_FILE, 'FILE', id, actualizado.name);
+        return actualizado;
     }
 };
 __decorate([
@@ -68,7 +88,7 @@ __decorate([
     __param(2, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, UploadFileDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FileController.prototype, "upload", null);
 __decorate([
     Get('list-file'),
@@ -84,7 +104,7 @@ __decorate([
     __param(1, Param('id', ParseObjectIdPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FileController.prototype, "getOne", null);
 __decorate([
     Get(':id/download'),
@@ -102,7 +122,7 @@ __decorate([
     __param(2, UploadedFile()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FileController.prototype, "replaceContent", null);
 __decorate([
     Patch(':id/rename'),
@@ -111,7 +131,7 @@ __decorate([
     __param(2, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, RenameFileDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FileController.prototype, "rename", null);
 __decorate([
     Patch(':id/move'),
@@ -120,11 +140,11 @@ __decorate([
     __param(2, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, MoveFileDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FileController.prototype, "move", null);
 FileController = __decorate([
     Controller('files'),
-    __metadata("design:paramtypes", [FileService])
+    __metadata("design:paramtypes", [FileService, AccessService, ActivityService])
 ], FileController);
 export { FileController };
 //# sourceMappingURL=file.controller.js.map

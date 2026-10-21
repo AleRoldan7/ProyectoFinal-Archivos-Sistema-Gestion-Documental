@@ -19,14 +19,18 @@ import { FileEntry } from '../schemas/file.schema.js';
 import { GridFsService } from './gridfs-service.service.js';
 import { FolderService } from '../../folders/service/folder-service.service.js';
 import { ALLOWED_EXTENSIONS, FileType, MIME_BY_TYPE } from '../../common/enums/files.enum.js';
+import { AccessService } from '../../sharing/service/access.service.js';
+import { Permission, ResourceType } from '../../common/enums/shraing.enum.js';
 let FileService = FileService_1 = class FileService {
     fileModel;
     gridFs;
     folders;
-    constructor(fileModel, gridFs, folders) {
+    access;
+    constructor(fileModel, gridFs, folders, access) {
         this.fileModel = fileModel;
         this.gridFs = gridFs;
         this.folders = folders;
+        this.access = access;
     }
     static decodeName(originalname) {
         return Buffer.from(originalname, 'latin1').toString('utf8').trim();
@@ -60,7 +64,13 @@ let FileService = FileService_1 = class FileService {
     }
     async upload(ownerId, folderId, file) {
         const { name, fileType } = this.validateUpload(file);
-        const folder = folderId ? await this.folders.getOwned(ownerId, folderId) : null;
+        let folder = null;
+        if (folderId) {
+            await this.access.require(ownerId, ResourceType.FOLDER, folderId, Permission.EDIT);
+            folder = await this.folders.findById(folderId);
+            if (!folder)
+                throw new NotFoundException('Carpeta no encontrada');
+        }
         await this.assertNameFree(ownerId, folder?._id ?? null, name);
         const gridFsId = await this.gridFs.upload(file.buffer, name, MIME_BY_TYPE[fileType]);
         try {
@@ -78,12 +88,17 @@ let FileService = FileService_1 = class FileService {
         return this.fileModel.findOne({ _id: id, deletedAt: null });
     }
     async list(ownerId, listFileQueryDto) {
-        const filter = { ownerId, deletedAt: null };
-        if (listFileQueryDto.folderId === 'root')
+        const filter = { deletedAt: null };
+        if (listFileQueryDto.folderId === 'root') {
             filter.folderId = null;
+            filter.ownerId = ownerId;
+        }
         else if (listFileQueryDto.folderId) {
-            await this.folders.getOwned(ownerId, listFileQueryDto.folderId);
+            await this.access.require(ownerId, ResourceType.FOLDER, listFileQueryDto.folderId, Permission.READ);
             filter.folderId = listFileQueryDto.folderId;
+        }
+        else {
+            filter.ownerId = ownerId;
         }
         if (listFileQueryDto.type)
             filter.fileType = listFileQueryDto.type;
@@ -111,12 +126,14 @@ let FileService = FileService_1 = class FileService {
         ]);
         return { items, total, page, limit };
     }
-    async download(ownerId, id) {
-        const file = await this.getOwned(ownerId, id);
+    async download(id) {
+        const file = await this.findById(id);
+        if (!file)
+            throw new NotFoundException('Archivo no encontrado');
         return { file, stream: this.gridFs.download(file.gridFsId) };
     }
-    async replaceContent(ownerId, id, upload) {
-        const file = await this.getOwned(ownerId, id);
+    async replaceContent(id, upload) {
+        const file = await this.getOwned(id);
         this.validateUpload(upload);
         const newId = await this.gridFs.upload(upload.buffer, file.name, file.mimeType);
         const oldId = file.gridFsId;
@@ -156,7 +173,7 @@ FileService = FileService_1 = __decorate([
     Injectable(),
     __param(0, InjectModel(FileEntry.name)),
     __metadata("design:paramtypes", [Model, GridFsService,
-        FolderService])
+        FolderService, AccessService])
 ], FileService);
 export { FileService };
 //# sourceMappingURL=file-service.service.js.map

@@ -16,7 +16,6 @@ import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';
 import { CreateFolderDTO } from '../dto/create-folder.dto.js';
 import { RenameFolderDTO } from '../dto/rename-folder.dto.js';
 import { MoveFolderDTO } from '../dto/move-folder.dto.js';
-import { ListFolderQueryDTO } from '../dto/list-folder-query.dto.js';
 import { FolderService } from '../service/folder-service.service.js';
 let FolderController = class FolderController {
     folders;
@@ -26,8 +25,8 @@ let FolderController = class FolderController {
     create(user, dto) {
         return this.folders.create(user.idUser, dto);
     }
-    list(user, query) {
-        return this.folders.findChildren(user.idUser, query.parentId);
+    list(user, parentId) {
+        return this.folders.findChildren(user.idUser, parentId);
     }
     getOne(user, id) {
         return this.folders.getWithPath(user.idUser, id);
@@ -50,9 +49,9 @@ __decorate([
 __decorate([
     Get(),
     __param(0, CurrentUser()),
-    __param(1, Query()),
+    __param(1, Query('parentId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, ListFolderQueryDTO]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], FolderController.prototype, "list", null);
 __decorate([

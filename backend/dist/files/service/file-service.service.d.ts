@@ -3,14 +3,16 @@ import { FileEntry, FileEntryDocument } from '../schemas/file.schema.js';
 import { GridFsService } from './gridfs-service.service.js';
 import { FolderService } from '../../folders/service/folder-service.service.js';
 import { ListFileQueryDTO } from '../dto/list-file-query.dto.js';
+import { AccessService } from '../../sharing/service/access.service.js';
 export declare class FileService {
     private readonly fileModel;
     private readonly gridFs;
     private readonly folders;
-    constructor(fileModel: Model<FileEntryDocument>, gridFs: GridFsService, folders: FolderService);
+    private readonly access;
+    constructor(fileModel: Model<FileEntryDocument>, gridFs: GridFsService, folders: FolderService, access: AccessService);
     static decodeName(originalname: string): string;
     private validateUpload;
-    getOwned(ownerId: string, id: string): Promise<mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
+    getOwned(ownerId?: string, id?: string): Promise<mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
         _id: mongoose.Types.ObjectId;
     } & {
         __v: number;
@@ -96,7 +98,7 @@ export declare class FileService {
         page: number;
         limit: number;
     }>;
-    download(ownerId: string, id: string): Promise<{
+    download(id: string): Promise<{
         file: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
             _id: mongoose.Types.ObjectId;
         } & {
@@ -114,7 +116,7 @@ export declare class FileService {
         }>;
         stream: mongoose.mongo.GridFSBucketReadStream;
     }>;
-    replaceContent(ownerId: string, id: string, upload: Express.Multer.File | undefined): Promise<mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
+    replaceContent(id: string, upload: Express.Multer.File | undefined): Promise<mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, FileEntry, {}, mongoose.DefaultSchemaOptions> & FileEntry & {
         _id: mongoose.Types.ObjectId;
     } & {
         __v: number;

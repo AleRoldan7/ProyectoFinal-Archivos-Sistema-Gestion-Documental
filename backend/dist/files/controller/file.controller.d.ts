@@ -5,9 +5,13 @@ import { RenameFileDTO } from '../dto/rename-file.dto.js';
 import { MoveFileDTO } from '../dto/move-file.dto.js';
 import { FileService } from '../service/file-service.service.js';
 import { ListFileQueryDTO } from '../dto/list-file-query.dto.js';
+import { AccessService } from '../../sharing/service/access.service.js';
+import { ActivityService } from '../../activity/service/activity.service.js';
 export declare class FileController {
     private readonly files;
-    constructor(files: FileService);
+    private readonly access;
+    private readonly activity;
+    constructor(files: FileService, access: AccessService, activity: ActivityService);
     upload(user: AuthUser, file: Express.Multer.File, dto: UploadFileDTO): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/file.schema.js").FileEntry, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/file.schema.js").FileEntry & {
         _id: import("mongoose").Types.ObjectId;
     } & {
@@ -43,7 +47,7 @@ export declare class FileController {
         page: number;
         limit: number;
     }>;
-    getOne(user: AuthUser, id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/file.schema.js").FileEntry, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/file.schema.js").FileEntry & {
+    getOne(user: AuthUser, id: string): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/file.schema.js").FileEntry, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/file.schema.js").FileEntry & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
@@ -57,7 +61,7 @@ export declare class FileController {
         id: string;
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>) | null>;
     download(user: AuthUser, id: string): Promise<StreamableFile>;
     replaceContent(user: AuthUser, id: string, file: Express.Multer.File): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/file.schema.js").FileEntry, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/file.schema.js").FileEntry & {
         _id: import("mongoose").Types.ObjectId;

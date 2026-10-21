@@ -7,11 +7,17 @@ import { UserService } from '../../users/service/user-service.service.js';
 import { ActivityService } from '../../activity/service/activity.service.js';
 import { CreateShareDTO, UpdateShareDTO } from '../dto/share.dto.js';
 import { ActionActivity } from '../../common/enums/action-activity.enum.js';
+import { adjuntarNombres } from '../../common/utils/resource-names.js';
+import { FileEntry, FileEntryDocument } from '../../files/schemas/file.schema.js';
+import { Folder, FolderDocument } from '../../folders/schemas/folder.schema.js';
 
 @Injectable()
 export class SharingService {
+    
     constructor(@InjectModel(Share.name) private readonly shareModel: Model<ShareDocument>, private readonly access: AccessService,
-        private readonly users: UserService, private readonly activity: ActivityService) { }
+        private readonly users: UserService, private readonly activity: ActivityService,
+        @InjectModel(FileEntry.name) private readonly fileModel: Model<FileEntryDocument>,
+        @InjectModel(Folder.name) private readonly folderModel: Model<FolderDocument>) { }
 
     async share(ownerId: string, dto: CreateShareDTO) {
         if (dto.userId === ownerId) throw new BadRequestException('No puedes compartir un recurso contigo mismo');
@@ -32,12 +38,14 @@ export class SharingService {
         return share;
     }
 
-    sharedWithMe(userId: string) {
-        return this.shareModel.find({ sharedWithId: userId }).populate('ownerId', 'firstName lastName email').sort({ createdAt: -1 });
+    async sharedWithMe(userId: string) {
+        const shares = await this.shareModel.find({ sharedWithId: userId }).populate('ownerId', 'firstName lastName email').sort({ createdAt: -1 });
+        return adjuntarNombres(shares, this.fileModel, this.folderModel);
     }
 
-    sharedByMe(ownerId: string) {
-        return this.shareModel.find({ ownerId }).populate('sharedWithId', 'firstName lastName email').sort({ createdAt: -1 });
+    async sharedByMe(ownerId: string) {
+        const shares = await this.shareModel.find({ ownerId }).populate('sharedWithId', 'firstName lastName email').sort({ createdAt: -1 });
+        return adjuntarNombres(shares, this.fileModel, this.folderModel);
     }
 
     async changePermission(ownerId: string, id: string, dto: UpdateShareDTO) {

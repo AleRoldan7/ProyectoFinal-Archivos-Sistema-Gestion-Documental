@@ -5,6 +5,8 @@ import { FileEntry, FileEntryDocument } from '../../files/schemas/file.schema.js
 import { Share, ShareDocument } from '../../sharing/schemas/share.schema.js';
 import { Activity, ActivityDocument } from '../../activity/schemas/activity.schema.js';
 import { dateFilter } from '../../common/utils/date-filter.js';
+import { Folder, FolderDocument } from '../../folders/schemas/folder.schema.js';
+import { adjuntarNombres } from '../../common/utils/resource-names.js';
 
 const lookupUsuario = { $lookup: { from: 'users', localField: '_id', foreignField: '_id', as: 'usuario' } };
 const lookupArchivo = { $lookup: { from: 'files', localField: '_id', foreignField: '_id', as: 'archivo' } };
@@ -12,9 +14,12 @@ const lookupArchivo = { $lookup: { from: 'files', localField: '_id', foreignFiel
 @Injectable()
 export class ReportsService {
     
-  constructor(@InjectModel(FileEntry.name) private readonly files: Model<FileEntryDocument>,@InjectModel(Share.name) private readonly shares: Model<ShareDocument>,
-              @InjectModel(Activity.name) private readonly activities: Model<ActivityDocument>) {}
-
+   constructor(
+    @InjectModel(FileEntry.name) private readonly files: Model<FileEntryDocument>,
+    @InjectModel(Folder.name) private readonly folders: Model<FolderDocument>,
+    @InjectModel(Share.name) private readonly shares: Model<ShareDocument>,
+    @InjectModel(Activity.name) private readonly activities: Model<ActivityDocument>,
+  ) {}
 
   archivosPorTipo() {
     return this.files.aggregate([
@@ -44,7 +49,6 @@ export class ReportsService {
     ]);
   }
 
-
   topUsuariosConArchivos(limit = 10) {
     return this.files.aggregate([
       { $match: { deletedAt: null } },
@@ -69,7 +73,6 @@ export class ReportsService {
     ]);
   }
 
-
   archivosCompartidosConMasUsuarios(limit = 10) {
     return this.shares.aggregate([
       { $match: { resourceType: 'FILE' } },
@@ -83,25 +86,28 @@ export class ReportsService {
     ]);
   }
 
-  compartidosPorUsuario(userId: string) {
-    return this.shares.find({ ownerId: userId })
+  // CAMBIO: ahora devuelve `resourceName` además del resto de campos
+  async compartidosPorUsuario(userId: string) {
+    const shares = await this.shares.find({ ownerId: userId })
       .populate('sharedWithId', 'firstName lastName email').sort({ createdAt: -1 });
+    return adjuntarNombres(shares, this.files, this.folders);
   }
 
-  recibidosPorUsuario(userId: string) {
-    return this.shares.find({ sharedWithId: userId })
+  async recibidosPorUsuario(userId: string) {
+    const shares = await this.shares.find({ sharedWithId: userId })
       .populate('ownerId', 'firstName lastName email').sort({ createdAt: -1 });
+    return adjuntarNombres(shares, this.files, this.folders);
   }
-
 
   actividadDeUsuario(userId: string, from?: string, to?: string) {
     return this.activities.find({ userId, ...dateFilter(from, to) }).sort({ createdAt: -1 });
   }
 
+  // CAMBIO: el campo del esquema es `actionActivity`, no `action`
   operacionesPorTipo(from?: string, to?: string) {
     return this.activities.aggregate([
       { $match: dateFilter(from, to) },
-      { $group: { _id: '$action', total: { $sum: 1 } } },
+      { $group: { _id: '$actionActivity', total: { $sum: 1 } } },
       { $sort: { total: -1 } },
       { $project: { _id: 0, tipo: '$_id', total: 1 } },
     ]);
@@ -119,7 +125,7 @@ export class ReportsService {
 
   principalesAcciones(limit = 10) {
     return this.activities.aggregate([
-      { $group: { _id: '$action', total: { $sum: 1 } } },
+      { $group: { _id: '$actionActivity', total: { $sum: 1 } } },
       { $sort: { total: -1 } },
       { $limit: limit },
       { $project: { _id: 0, accion: '$_id', total: 1 } },

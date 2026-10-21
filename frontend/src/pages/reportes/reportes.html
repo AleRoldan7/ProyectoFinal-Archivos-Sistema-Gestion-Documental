@@ -1,0 +1,121 @@
+<h1 class="mb-4 text-xl font-semibold text-slate-800">{{ esAdmin ? 'Reportes' : 'Mis reportes' }}</h1>
+
+<div class="flex flex-col gap-4 lg:flex-row">
+  <!-- Lista de reportes -->
+  <aside class="shrink-0 lg:w-72">
+    <div class="space-y-4 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+      @for (g of grupos; track g.nombre) {
+        <div>
+          <h2 class="mb-1 px-2 text-xs font-semibold uppercase tracking-wide text-slate-500">{{ g.nombre }}</h2>
+          <ul>
+            @for (r of g.items; track r.id) {
+              <li>
+                <button
+                  type="button"
+                  class="w-full rounded-lg px-2 py-1.5 text-left text-sm hover:bg-slate-100"
+                  [class]="r.id === seleccionado().id ? 'bg-blue-50 font-semibold text-blue-700' : 'text-slate-700'"
+                  (click)="elegir(r)"
+                >
+                  {{ r.titulo }}
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </aside>
+
+  <!-- Resultado -->
+  <section class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <h2 class="text-lg font-semibold text-slate-800">{{ seleccionado().titulo }}</h2>
+    <p class="mb-4 text-sm text-slate-500">{{ seleccionado().descripcion }}</p>
+
+    @if (seleccionado().filtros.length > 0) {
+      <div class="mb-4 flex flex-wrap items-end gap-3">
+        @if (tiene('usuario') && esAdmin) {
+          <label class="text-sm">
+            <span class="mb-1 block text-slate-600">Usuario</span>
+            <select class="w-64 rounded-lg border border-slate-300 p-2 text-sm" [(ngModel)]="filtros.userId">
+              <option value="">Mi cuenta</option>
+              @for (u of usuarios(); track u.idUser) {
+                <option [value]="u.idUser">{{ u.firstName }} {{ u.lastName }} — {{ u.email }}</option>
+              }
+            </select>
+          </label>
+        }
+        @if (tiene('periodo')) {
+          <label class="text-sm">
+            <span class="mb-1 block text-slate-600">Agrupar por</span>
+            <select class="rounded-lg border border-slate-300 p-2 text-sm" [(ngModel)]="filtros.periodo">
+              <option value="DIA">Día</option>
+              <option value="MES">Mes</option>
+            </select>
+          </label>
+        }
+        @if (tiene('from')) {
+          <label class="text-sm">
+            <span class="mb-1 block text-slate-600">Desde</span>
+            <input type="date" class="rounded-lg border border-slate-300 p-2 text-sm" [(ngModel)]="filtros.from" />
+          </label>
+        }
+        @if (tiene('to')) {
+          <label class="text-sm">
+            <span class="mb-1 block text-slate-600">Hasta</span>
+            <input type="date" class="rounded-lg border border-slate-300 p-2 text-sm" [(ngModel)]="filtros.to" />
+          </label>
+        }
+        @if (tiene('limit')) {
+          <label class="text-sm">
+            <span class="mb-1 block text-slate-600">Mostrar los primeros</span>
+            <input type="number" min="1" max="100" class="w-24 rounded-lg border border-slate-300 p-2 text-sm" [(ngModel)]="filtros.limit" />
+          </label>
+        }
+        <button type="button" class="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800" (click)="consultar()">Consultar</button>
+      </div>
+    }
+
+    @if (cargando()) {
+      <p class="text-sm text-slate-500">Consultando…</p>
+    } @else if (consultado() && filas().length === 0) {
+      <div class="rounded-lg border-2 border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">No hay datos para este reporte.</div>
+    } @else if (filas().length > 0) {
+      <div class="mb-2 flex items-center justify-between text-sm text-slate-500">
+        <span>{{ filas().length }} resultado(s)</span>
+        <button type="button" class="rounded-lg border border-slate-300 px-3 py-1 text-xs hover:bg-slate-100" (click)="exportarCsv()">⬇️ Exportar CSV</button>
+      </div>
+      <div class="overflow-x-auto rounded-lg border border-slate-200">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+            <tr>
+              <th class="px-3 py-2">#</th>
+              @for (c of seleccionado().columnas; track c.etiqueta) {
+                <th class="px-3 py-2">{{ c.etiqueta }}</th>
+              }
+              @if (seleccionado().barra) {
+                <th class="w-40 px-3 py-2"></th>
+              }
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (f of filas(); track $index) {
+              <tr class="hover:bg-slate-50">
+                <td class="px-3 py-2 text-slate-400">{{ $index + 1 }}</td>
+                @for (c of seleccionado().columnas; track c.etiqueta) {
+                  <td class="px-3 py-2 text-slate-800">{{ c.valor(f) }}</td>
+                }
+                @if (seleccionado().barra) {
+                  <td class="px-3 py-2">
+                    <div class="h-2 w-full rounded-full bg-slate-100">
+                      <div class="h-2 rounded-full bg-blue-600" [style.width.%]="porcentaje(f)"></div>
+                    </div>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>

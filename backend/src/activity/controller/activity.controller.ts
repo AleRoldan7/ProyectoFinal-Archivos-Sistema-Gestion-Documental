@@ -13,6 +13,7 @@ export class ActivityController {
     @Get()
     list(@CurrentUser() user: AuthUser, @Query() query: ListActivityDTO) {
         const userId = user.rol === Rol.ADMIN ? query.userId : user.idUser;
-        return this.activityService.consult({...query, userId });
+        const { action, ...resto } = query;
+        return this.activityService.consult({ ...resto, actionActivity: action, userId });
     }
 }

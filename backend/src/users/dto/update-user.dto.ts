@@ -1,14 +1,20 @@
-import { IsEmail, IsEnum, IsInt, IsString, Min, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsOptional, MinLength } from "class-validator";
 import { Rol } from "../../common/enums/rol.enum.js";
 
 export class UpdateUserDTO {
 
-    @IsEmail()
-    email: string;
+    @IsOptional() @IsString() @IsNotEmpty()
+    firstName?: string;
 
-    @IsString() @MinLength(5)
-    password: string;
+    @IsOptional() @IsString() @IsNotEmpty()
+    lastName?: string;
 
-    @IsEnum(Rol)
-    rol: Rol;
+    @IsOptional() @IsEmail()
+    email?: string;
+
+    @IsOptional() @IsString() @MinLength(5)
+    password?: string;
+
+    @IsOptional() @IsEnum(Rol)
+    rol?: Rol;
 }

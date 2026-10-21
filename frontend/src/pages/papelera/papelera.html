@@ -1,0 +1,45 @@
+<h1 class="mb-4 text-xl font-semibold text-slate-800">Papelera</h1>
+
+@if (cargando()) {
+  <p class="text-sm text-slate-500">Cargando…</p>
+} @else if (vacia()) {
+  <div class="rounded-xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">
+    La papelera está vacía.
+  </div>
+} @else {
+  @if (contenido().folders.length > 0) {
+    <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Carpetas</h2>
+    <ul class="mb-6 divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white shadow-sm">
+      @for (c of contenido().folders; track c._id) {
+        <li class="flex flex-wrap items-center justify-between gap-2 p-3">
+          <div class="min-w-0">
+            <p class="truncate text-sm font-medium text-slate-800">📁 {{ c.name }}</p>
+            <p class="text-xs text-slate-500">Eliminada: {{ formatDate(c.deletedAt) }}</p>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" class="rounded-lg border border-slate-300 px-3 py-1 text-xs hover:bg-slate-100" (click)="restaurarCarpeta(c._id)">♻️ Restaurar</button>
+            <button type="button" class="rounded-lg px-3 py-1 text-xs text-red-600 hover:bg-red-50" (click)="eliminarCarpeta(c._id, c.name)">Eliminar definitivamente</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (contenido().files.length > 0) {
+    <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Archivos</h2>
+    <ul class="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white shadow-sm">
+      @for (a of contenido().files; track a._id) {
+        <li class="flex flex-wrap items-center justify-between gap-2 p-3">
+          <div class="min-w-0">
+            <p class="truncate text-sm font-medium text-slate-800">{{ a.fileType === 'md' ? '📝' : '📄' }} {{ a.name }}</p>
+            <p class="text-xs text-slate-500">{{ formatBytes(a.size) }} · Eliminado: {{ formatDate(a.deletedAt) }}</p>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" class="rounded-lg border border-slate-300 px-3 py-1 text-xs hover:bg-slate-100" (click)="restaurarArchivo(a._id)">♻️ Restaurar</button>
+            <button type="button" class="rounded-lg px-3 py-1 text-xs text-red-600 hover:bg-red-50" (click)="eliminarArchivo(a._id, a.name)">Eliminar definitivamente</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+}

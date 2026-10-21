@@ -7,12 +7,14 @@ import { GridFsService } from './gridfs-service.service.js';
 import { FolderService } from '../../folders/service/folder-service.service.js';
 import { ALLOWED_EXTENSIONS, FileType, MIME_BY_TYPE } from '../../common/enums/files.enum.js';
 import { ListFileQueryDTO } from '../dto/list-file-query.dto.js';
+import { AccessService } from '../../sharing/service/access.service.js';
+import { Permission, ResourceType } from '../../common/enums/shraing.enum.js';
 
 
 @Injectable()
 export class FileService {
     constructor(@InjectModel(FileEntry.name) private readonly fileModel: Model<FileEntryDocument>, private readonly gridFs: GridFsService,
-        private readonly folders: FolderService) { }
+        private readonly folders: FolderService, private readonly access: AccessService) { }
 
     static decodeName(originalname: string) {
         return Buffer.from(originalname, 'latin1').toString('utf8').trim();
@@ -49,7 +51,13 @@ export class FileService {
 
     async upload(ownerId: string, folderId: string | undefined, file: Express.Multer.File | undefined) {
         const { name, fileType } = this.validateUpload(file);
-        const folder = folderId ? await this.folders.getOwned(ownerId, folderId) : null;
+        let folder = null;
+
+        if (folderId) {
+            await this.access.require(ownerId, ResourceType.FOLDER, folderId, Permission.EDIT);
+            folder = await this.folders.findById(folderId);
+            if (!folder) throw new NotFoundException('Carpeta no encontrada');
+        }
 
         await this.assertNameFree(ownerId, folder?._id ?? null, name);
 
@@ -70,12 +78,18 @@ export class FileService {
     }
 
     async list(ownerId: string, listFileQueryDto: ListFileQueryDTO) {
-        const filter: Record<string, any> = { ownerId, deletedAt: null };
+        const filter: Record<string, any> = { deletedAt: null };
 
-        if (listFileQueryDto.folderId === 'root') filter.folderId = null;
-        else if (listFileQueryDto.folderId) {
-            await this.folders.getOwned(ownerId, listFileQueryDto.folderId);
+        if (listFileQueryDto.folderId === 'root') {
+            filter.folderId = null;
+            filter.ownerId = ownerId;
+        } else if (listFileQueryDto.folderId) {
+            // Validar acceso a la carpeta (propia o compartida)
+            await this.access.require(ownerId, ResourceType.FOLDER, listFileQueryDto.folderId, Permission.READ);
             filter.folderId = listFileQueryDto.folderId;
+        } else {
+            // Si no hay folderId, por defecto solo vemos lo propio
+            filter.ownerId = ownerId;
         }
 
         if (listFileQueryDto.type) filter.fileType = listFileQueryDto.type;
@@ -104,8 +118,9 @@ export class FileService {
         return { items, total, page, limit };
     }
 
-    async download(ownerId: string, id: string) {
-        const file = await this.getOwned(ownerId, id);
+    async download(id: string) {
+        const file = await this.findById(id); 
+        if (!file) throw new NotFoundException('Archivo no encontrado');
         return { file, stream: this.gridFs.download(file.gridFsId) };
     }
 

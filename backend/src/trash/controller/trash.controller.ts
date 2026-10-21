@@ -9,7 +9,7 @@ export class TrashController {
 
     constructor(private readonly trashService: TrashService) { }
 
-    @Delete('files/:id')
+    @Delete('folders/:id')
     sendFolder(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
         return this.trashService.sendFolder(user.idUser, id);
     }

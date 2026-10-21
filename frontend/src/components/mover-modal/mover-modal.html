@@ -1,0 +1,34 @@
+<app-modal [titulo]="'Mover «' + nombre() + '»'" (cerrar)="cerrar.emit()">
+  <nav class="mb-3 flex flex-wrap items-center gap-1 text-sm text-slate-600">
+    <button type="button" class="rounded px-1 hover:bg-slate-100 hover:text-blue-700" (click)="entrarA(null)">Mi unidad</button>
+    @for (p of ruta(); track p._id) {
+      <span>/</span>
+      <button type="button" class="rounded px-1 hover:bg-slate-100 hover:text-blue-700" (click)="entrarA(p._id)">{{ p.name }}</button>
+    }
+  </nav>
+
+  <div class="mb-4 max-h-64 overflow-auto rounded-lg border border-slate-200">
+    @if (cargando()) {
+      <p class="p-4 text-sm text-slate-500">Cargando…</p>
+    } @else if (carpetas().length === 0) {
+      <p class="p-4 text-sm text-slate-500">No hay subcarpetas aquí.</p>
+    } @else {
+      <ul class="divide-y divide-slate-100">
+        @for (c of carpetas(); track c._id) {
+          <li>
+            <button type="button" class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50" (click)="entrarA(c._id)">
+              <span>📁</span><span class="truncate">{{ c.name }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="flex justify-end gap-2">
+    <button type="button" class="rounded-lg border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" (click)="cerrar.emit()">Cancelar</button>
+    <button type="button" class="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-50" [disabled]="esMismaUbicacion || cargando()" (click)="confirmar()">
+      Mover aquí
+    </button>
+  </div>
+</app-modal>

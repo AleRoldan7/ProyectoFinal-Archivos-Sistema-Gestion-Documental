@@ -2,7 +2,6 @@ import type { AuthUser } from '../../common/interfaces/auth-user.interface.js';
 import { CreateFolderDTO } from '../dto/create-folder.dto.js';
 import { RenameFolderDTO } from '../dto/rename-folder.dto.js';
 import { MoveFolderDTO } from '../dto/move-folder.dto.js';
-import { ListFolderQueryDTO } from '../dto/list-folder-query.dto.js';
 import { FolderService } from '../service/folder-service.service.js';
 export declare class FolderController {
     private readonly folders;
@@ -22,7 +21,7 @@ export declare class FolderController {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>>;
-    list(user: AuthUser, query: ListFolderQueryDTO): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/folder.schema.js").Folder, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/folder.schema.js").Folder & {
+    list(user: AuthUser, parentId?: string): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/folder.schema.js").Folder, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/folder.schema.js").Folder & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
@@ -38,13 +37,21 @@ export declare class FolderController {
         _id: import("mongoose").Types.ObjectId;
     }>)[]>;
     getOne(user: AuthUser, id: string): Promise<{
-        folder: import("mongoose").Document<unknown, {}, import("../schemas/folder.schema.js").Folder, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/folder.schema.js").Folder & {
+        folder: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/folder.schema.js").Folder, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/folder.schema.js").Folder & {
             _id: import("mongoose").Types.ObjectId;
         } & {
             __v: number;
         } & {
             id: string;
-        };
+        }, {}, import("mongoose").DefaultSchemaOptions> & import("mongoose").Document<unknown, {}, import("../schemas/folder.schema.js").Folder, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/folder.schema.js").Folder & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        } & {
+            id: string;
+        } & Required<{
+            _id: import("mongoose").Types.ObjectId;
+        }>;
         path: {
             _id: import("mongoose").Types.ObjectId;
             name: string | undefined;

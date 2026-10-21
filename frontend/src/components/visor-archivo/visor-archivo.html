@@ -1,0 +1,26 @@
+<app-modal [titulo]="archivo().name" ancho="max-w-3xl" (cerrar)="cerrar.emit()">
+  <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+    <p class="text-xs text-slate-500">{{ archivo().fileType.toUpperCase() }} · {{ formatBytes(archivo().size) }}</p>
+    <div class="flex gap-2">
+      @if (!editando()) {
+        <button type="button" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100 disabled:opacity-50" [disabled]="cargando()" (click)="descargar()">⬇️ Descargar</button>
+        @if (puedeEditar()) {
+          <button type="button" class="rounded-lg bg-blue-700 px-3 py-1.5 text-sm text-white hover:bg-blue-800 disabled:opacity-50" [disabled]="cargando()" (click)="empezarEdicion()">✏️ Editar</button>
+        }
+      } @else {
+        <button type="button" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100" (click)="cancelarEdicion()">Cancelar</button>
+        <button type="button" class="rounded-lg bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700 disabled:opacity-50" [disabled]="guardando()" (click)="guardar()">
+          {{ guardando() ? 'Guardando…' : '💾 Guardar' }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <p class="text-sm text-slate-500">Cargando contenido…</p>
+  } @else if (editando()) {
+    <textarea class="h-96 w-full rounded-lg border border-slate-300 p-3 font-mono text-sm" [(ngModel)]="borrador" spellcheck="false"></textarea>
+  } @else {
+    <pre class="max-h-96 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3 font-mono text-sm text-slate-800">{{ texto() || '(archivo vacío)' }}</pre>
+  }
+</app-modal>

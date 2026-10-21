@@ -1,0 +1,107 @@
+<div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+  <h1 class="text-xl font-semibold text-slate-800">Usuarios</h1>
+  <div class="flex gap-2">
+    <input type="search" class="w-60 rounded-lg border border-slate-300 bg-white p-2 text-sm" placeholder="Buscar por nombre o correo…" [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
+    <button type="button" class="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800" (click)="abrirCrear()">➕ Nuevo usuario</button>
+  </div>
+</div>
+
+@if (cargando()) {
+  <p class="text-sm text-slate-500">Cargando…</p>
+} @else {
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <table class="w-full text-left text-sm">
+      <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+        <tr>
+          <th class="px-4 py-2">Nombre</th>
+          <th class="px-4 py-2">Correo</th>
+          <th class="px-4 py-2">Rol</th>
+          <th class="px-4 py-2">Estado</th>
+          <th class="px-4 py-2">Creado</th>
+          <th class="px-4 py-2 text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        @for (u of visibles(); track u.idUser) {
+          <tr class="hover:bg-slate-50">
+            <td class="px-4 py-2 font-medium text-slate-800">{{ u.firstName }} {{ u.lastName }} @if (esYo(u)) { <span class="ml-1 text-xs text-slate-400">(tú)</span> }</td>
+            <td class="px-4 py-2 text-slate-600">{{ u.email }}</td>
+            <td class="px-4 py-2">
+              <span class="rounded-full px-2 py-0.5 text-xs font-medium" [class]="u.rol === 'ADMIN' ? 'bg-purple-50 text-purple-700' : 'bg-slate-100 text-slate-700'">
+                {{ u.rol === 'ADMIN' ? 'Administrador' : 'Usuario' }}
+              </span>
+            </td>
+            <td class="px-4 py-2">
+              <span class="rounded-full px-2 py-0.5 text-xs font-medium" [class]="u.stateUser ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'">
+                {{ u.stateUser ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="px-4 py-2 text-slate-500">{{ formatDate(u.createdAt) }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-right">
+              <button type="button" class="rounded px-2 py-1 text-xs hover:bg-slate-100" (click)="abrirEditar(u)">✏️ Editar</button>
+              @if (!esYo(u)) {
+                <button type="button" class="rounded px-2 py-1 text-xs hover:bg-slate-100" (click)="alternarEstado(u)">{{ u.stateUser ? '⛔ Desactivar' : '✅ Activar' }}</button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">No se encontraron usuarios.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (modalAbierto()) {
+  <app-modal [titulo]="editando() ? 'Editar usuario' : 'Nuevo usuario'" (cerrar)="cerrarModal()">
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="space-y-3">
+      <div class="grid gap-3 sm:grid-cols-2">
+        <label class="text-sm">
+          <span class="mb-1 block text-slate-600">Nombres</span>
+          <input class="w-full rounded-lg border border-slate-300 p-2" formControlName="firstName" />
+          @if (form.controls.firstName.touched && form.controls.firstName.invalid) {
+            <small class="text-red-600">Obligatorio</small>
+          }
+        </label>
+        <label class="text-sm">
+          <span class="mb-1 block text-slate-600">Apellidos</span>
+          <input class="w-full rounded-lg border border-slate-300 p-2" formControlName="lastName" />
+          @if (form.controls.lastName.touched && form.controls.lastName.invalid) {
+            <small class="text-red-600">Obligatorio</small>
+          }
+        </label>
+      </div>
+
+      <label class="block text-sm">
+        <span class="mb-1 block text-slate-600">Correo electrónico</span>
+        <input type="email" class="w-full rounded-lg border border-slate-300 p-2" formControlName="email" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small class="text-red-600">Ingresa un correo válido</small>
+        }
+      </label>
+
+      <label class="block text-sm">
+        <span class="mb-1 block text-slate-600">{{ editando() ? 'Nueva contraseña (opcional)' : 'Contraseña' }}</span>
+        <input type="password" autocomplete="new-password" class="w-full rounded-lg border border-slate-300 p-2" formControlName="password" />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small class="text-red-600">Mínimo 5 caracteres</small>
+        }
+      </label>
+
+      <label class="block text-sm">
+        <span class="mb-1 block text-slate-600">Rol</span>
+        <select class="w-full rounded-lg border border-slate-300 p-2" formControlName="rol">
+          <option value="USUARIO">Usuario</option>
+          <option value="ADMIN">Administrador</option>
+        </select>
+      </label>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" class="rounded-lg border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-60" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando…' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+}

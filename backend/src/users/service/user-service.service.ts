@@ -54,7 +54,7 @@ export class UserService implements OnModuleInit {
     }
 
     directory() {
-        return this.userModel.find({ state: true }).select('firstName email').sort({ firstName: 1 });
+        return this.userModel.find({ stateUser: true }).select('firstName email').sort({ firstName: 1 });
     }
 
     findById(id: string) {
@@ -72,16 +72,26 @@ export class UserService implements OnModuleInit {
     }
 
     async update(id: string, updateDto: UpdateUserDTO) {
-        const user = await this.userModel.findByIdAndUpdate(id, updateDto, { new: true });
-        if (!user) throw new NotFoundException('Usuario no encontrado');
-        return user;
+        const cambios: Record<string, unknown> = { ...updateDto };
+
+        if (updateDto.password) cambios['password'] = await bcrypt.hash(updateDto.password, 10);
+        else delete cambios['password'];
+
+        try {
+            const user = await this.userModel.findByIdAndUpdate(id, cambios, { new: true });
+            if (!user) throw new NotFoundException('Usuario no encontrado');
+            return user;
+        } catch (e: any) {
+            if (e?.code === 11000) throw new ConflictException('El correo ya fue registrado');
+            throw e;
+        }
     }
 
     async setActivo(id: string, state: boolean, actorId: string) {
         if (id === actorId && !state) {
             throw new ForbiddenException('No puedes desactivar tu propia cuenta');
         }
-        const user = await this.userModel.findByIdAndUpdate(id, { activo: state }, { new: true });
+        const user = await this.userModel.findByIdAndUpdate(id, { stateUser: state }, { new: true });
         if (!user) throw new NotFoundException('Usuario no encontrado');
         return user;
     }

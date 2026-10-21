@@ -19,8 +19,8 @@ export class FolderController {
     }
 
     @Get()
-    list(@CurrentUser() user: AuthUser, @Query() query: ListFolderQueryDTO) {
-        return this.folders.findChildren(user.idUser, query.parentId);
+    list(@CurrentUser() user: AuthUser, @Query('parentId') parentId?: string) {
+        return this.folders.findChildren(user.idUser, parentId);
     }
 
     @Get(':id')
@@ -37,4 +37,5 @@ export class FolderController {
     move(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string, @Body() dto: MoveFolderDTO) {
         return this.folders.move(user.idUser, id, dto.parentId);
     }
+
 }

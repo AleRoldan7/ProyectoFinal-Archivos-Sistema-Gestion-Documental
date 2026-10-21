@@ -3,10 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Folder, FolderDocument } from '../schemas/folder.schema.js';
 import { CreateFolderDTO } from '../dto/create-folder.dto.js';
+import { Permission, ResourceType } from '../../common/enums/shraing.enum.js';
+import { AccessService } from '../../sharing/service/access.service.js';
 
 @Injectable()
 export class FolderService {
-    constructor(@InjectModel(Folder.name) private readonly folderModel: Model<FolderDocument>) { }
+    constructor(
+        @InjectModel(Folder.name) private readonly folderModel: Model<FolderDocument>, private readonly access: AccessService) { }
 
     async getOwned(ownerId: string, id: string): Promise<FolderDocument> {
         const folder = await this.folderModel.findOne({ _id: id, ownerId, deletedAt: null });
@@ -27,7 +30,12 @@ export class FolderService {
     async create(ownerId: string, dto: CreateFolderDTO) {
         const name = dto.name.trim();
         let parent: FolderDocument | null = null;
-        if (dto.parentId) parent = await this.getOwned(ownerId, dto.parentId);
+
+        if (dto.parentId) {
+            await this.access.require(ownerId, ResourceType.FOLDER, dto.parentId, Permission.EDIT);
+            parent = await this.folderModel.findOne({ _id: dto.parentId, deletedAt: null });
+            if (!parent) throw new NotFoundException('Carpeta padre no encontrada');
+        }
 
         await this.assertNameFree(ownerId, parent?._id ?? null, name);
 
@@ -40,14 +48,25 @@ export class FolderService {
     }
 
     async findChildren(ownerId: string, parentId?: string) {
-        if (parentId) await this.getOwned(ownerId, parentId); 
-        return this.folderModel
-            .find({ ownerId, parentId: parentId ?? null, deletedAt: null })
-            .sort({ name: 1 });
+        const filter: Record<string, any> = { deletedAt: null };
+
+        if (parentId) {
+            await this.access.require(ownerId, ResourceType.FOLDER, parentId, Permission.READ);
+            filter.parentId = parentId;
+        } else {
+            filter.ownerId = ownerId;
+            filter.parentId = null;
+        }
+
+        return this.folderModel.find(filter).sort({ name: 1 });
     }
 
     async getWithPath(ownerId: string, id: string) {
-        const folder = await this.getOwned(ownerId, id);
+        await this.access.require(ownerId, ResourceType.FOLDER, id, Permission.READ);
+
+        const folder = await this.folderModel.findOne({ _id: id, deletedAt: null });
+        if (!folder) throw new NotFoundException('Carpeta no encontrada');
+
         const docs = await this.folderModel
             .find({ _id: { $in: folder.ancestors } })
             .select('name');
@@ -69,7 +88,9 @@ export class FolderService {
 
         let dest: FolderDocument | null = null;
         if (newParentId) {
-            dest = await this.getOwned(ownerId, newParentId);
+            await this.access.require(ownerId, ResourceType.FOLDER, newParentId, Permission.EDIT);
+            dest = await this.folderModel.findOne({ _id: newParentId, deletedAt: null });
+            if (!dest) throw new NotFoundException('Carpeta destino no encontrada');
 
             const intoItself = dest._id.equals(folder._id);
             const intoDescendant = dest.ancestors.some((a) => a.equals(folder._id));
@@ -102,5 +123,9 @@ export class FolderService {
         folder.parentId = dest?._id ?? null;
         folder.ancestors = newPrefix;
         return folder.save();
+    }
+
+    findById(id: string) {
+        return this.folderModel.findOne({ _id: id, deletedAt: null });
     }
 }

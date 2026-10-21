@@ -7,23 +7,40 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { IsEmail, IsEnum, IsString, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsOptional, MinLength } from "class-validator";
 import { Rol } from "../../common/enums/rol.enum.js";
 export class UpdateUserDTO {
+    firstName;
+    lastName;
     email;
     password;
     rol;
 }
 __decorate([
+    IsOptional(),
+    IsString(),
+    IsNotEmpty(),
+    __metadata("design:type", String)
+], UpdateUserDTO.prototype, "firstName", void 0);
+__decorate([
+    IsOptional(),
+    IsString(),
+    IsNotEmpty(),
+    __metadata("design:type", String)
+], UpdateUserDTO.prototype, "lastName", void 0);
+__decorate([
+    IsOptional(),
     IsEmail(),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "email", void 0);
 __decorate([
+    IsOptional(),
     IsString(),
     MinLength(5),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "password", void 0);
 __decorate([
+    IsOptional(),
     IsEnum(Rol),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "rol", void 0);

@@ -1,0 +1,54 @@
+<app-modal [titulo]="'Compartir «' + nombre() + '»'" (cerrar)="cerrar.emit()">
+  @if (cargando()) {
+    <p class="text-sm text-slate-500">Cargando…</p>
+  } @else {
+    <div class="space-y-5">
+      <section class="space-y-3">
+        <label class="block text-sm font-medium text-slate-700">Usuario</label>
+        <select class="w-full rounded-lg border border-slate-300 p-2 text-sm" [(ngModel)]="usuarioElegido">
+          <option value="">Selecciona una persona…</option>
+          @for (u of usuarios(); track u._id) {
+            <option [value]="u._id">{{ u.firstName }} — {{ u.email }}</option>
+          }
+        </select>
+
+        <label class="block text-sm font-medium text-slate-700">Permiso</label>
+        <select class="w-full rounded-lg border border-slate-300 p-2 text-sm" [(ngModel)]="permisoElegido">
+          @for (p of permisos; track p) {
+            <option [value]="p">{{ etiquetaPermiso[p] }}</option>
+          }
+        </select>
+
+        <button type="button" class="w-full rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-60" [disabled]="enviando()" (click)="compartir()">
+          {{ enviando() ? 'Compartiendo…' : 'Compartir' }}
+        </button>
+      </section>
+
+      <section>
+        <h3 class="mb-2 text-sm font-semibold text-slate-700">Personas con acceso</h3>
+        @if (accesos().length === 0) {
+          <p class="text-sm text-slate-500">Todavía no lo compartes con nadie.</p>
+        } @else {
+          <ul class="divide-y divide-slate-100 rounded-lg border border-slate-200">
+            @for (a of accesos(); track a._id) {
+              <li class="flex items-center justify-between gap-3 p-3">
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-medium text-slate-800">{{ nombreDe(a.sharedWithId) }}</p>
+                  <p class="truncate text-xs text-slate-500">{{ correoDe(a.sharedWithId) }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <select class="rounded border border-slate-300 p-1 text-xs" [value]="a.permission" (change)="cambiarPermiso(a, $any($event.target).value)">
+                    @for (p of permisos; track p) {
+                      <option [value]="p" [selected]="p === a.permission">{{ etiquetaPermiso[p] }}</option>
+                    }
+                  </select>
+                  <button type="button" class="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50" (click)="revocar(a)">Quitar</button>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    </div>
+  }
+</app-modal>

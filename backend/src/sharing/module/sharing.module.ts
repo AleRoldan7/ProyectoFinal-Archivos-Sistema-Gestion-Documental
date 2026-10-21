@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FolderModule } from '../../folders/module/folder.module.js';
 import { FileModule } from '../../files/module/file.module.js';
@@ -11,8 +11,8 @@ import { AccessService } from '../service/access.service.js';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Share.name, schema: ShareSchema }]),
-    FolderModule,
-    FileModule,
+    forwardRef(() => FolderModule),
+    forwardRef(() => FileModule),
     UserModule,
   ],
   controllers: [SharingController],

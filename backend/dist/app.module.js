@@ -14,6 +14,13 @@ import { UserModule } from './users/module/user.module.js';
 import { AuthModule } from './auth/module/auth.module.js';
 import { FolderModule } from './folders/module/folder.module.js';
 import { FileModule } from './files/module/file.module.js';
+import { ActivityModule } from './activity/module/activity.module.js';
+import { ReportsModule } from './report/module/reports.module.js';
+import { SharingModule } from './sharing/module/sharing.module.js';
+import { TrashModule } from './trash/module/trash.module.js';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
+import { RolesGuard } from './common/guards/roles.guard.js';
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 let AppModule = class AppModule {
 };
@@ -31,6 +38,10 @@ AppModule = __decorate([
             AuthModule,
             FolderModule,
             FileModule,
+            ActivityModule,
+            ReportsModule,
+            SharingModule,
+            TrashModule,
             ObserveModule.forRoot({
                 appKey: 'YOUR_APP_KEY',
                 appSecret: 'YOUR_APP_SECRET',
@@ -38,7 +49,10 @@ AppModule = __decorate([
             }),
         ],
         controllers: [AppController],
-        providers: [AppService],
+        providers: [AppService,
+            { provide: APP_GUARD, useClass: JwtAuthGuard },
+            { provide: APP_GUARD, useClass: RolesGuard },
+        ],
     })
 ], AppModule);
 export { AppModule };

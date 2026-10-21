@@ -1,6 +1,8 @@
 import { Rol } from "../../common/enums/rol.enum.js";
 export declare class UpdateUserDTO {
-    email: string;
-    password: string;
-    rol: Rol;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    rol?: Rol;
 }

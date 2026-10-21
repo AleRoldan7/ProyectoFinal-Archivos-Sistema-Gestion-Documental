@@ -1,0 +1,159 @@
+<section
+  class="relative min-h-[60vh] rounded-xl"
+  (dragover)="$event.preventDefault(); arrastrando.set(true)"
+  (dragleave)="arrastrando.set(false)"
+  (drop)="soltar($event)"
+>
+  @if (arrastrando()) {
+    <div class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-xl border-2 border-dashed border-blue-500 bg-blue-50/80 text-lg font-medium text-blue-700">
+      Suelta aquí tus archivos .txt o .md
+    </div>
+  }
+
+  <!-- Ruta de navegación -->
+  <nav class="mb-4 flex flex-wrap items-center gap-1 text-sm text-slate-600" aria-label="Ruta">
+    <a routerLink="/drive" class="rounded px-1 font-medium hover:bg-slate-200" [class.text-blue-700]="!carpetaId()">Mi unidad</a>
+    @for (p of ruta(); track p._id; let ultimo = $last) {
+      <span>/</span>
+      @if (ultimo) {
+        <span class="px-1 font-semibold text-blue-700">{{ p.name }}</span>
+      } @else {
+        <a [routerLink]="['/drive', p._id]" class="rounded px-1 hover:bg-slate-200">{{ p.name }}</a>
+      }
+    }
+  </nav>
+
+  <!-- Barra de herramientas -->
+  <div class="mb-5 flex flex-wrap items-center gap-2">
+    <button type="button" class="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800" (click)="nuevaCarpeta()">➕ Nueva carpeta</button>
+
+    <label class="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">
+      {{ subiendo() ? 'Subiendo…' : '⬆️ Subir archivos' }}
+      <input type="file" class="hidden" multiple accept=".txt,.md" [disabled]="subiendo()" (change)="subirSeleccion($event)" />
+    </label>
+
+    <div class="ml-auto flex flex-wrap items-center gap-2">
+      <input
+        type="search"
+        class="w-48 rounded-lg border border-slate-300 bg-white p-2 text-sm"
+        placeholder="Buscar por nombre…"
+        [value]="busqueda()"
+        (input)="alEscribirBusqueda($any($event.target).value)"
+      />
+      <select class="rounded-lg border border-slate-300 bg-white p-2 text-sm" [ngModel]="tipo()" (ngModelChange)="tipo.set($event); alCambiarFiltro()">
+        <option value="">Todos los tipos</option>
+        <option value="txt">Texto (.txt)</option>
+        <option value="md">Markdown (.md)</option>
+      </select>
+      <select class="rounded-lg border border-slate-300 bg-white p-2 text-sm" [ngModel]="orden()" (ngModelChange)="orden.set($event); alCambiarFiltro()">
+        <option value="createdAt:desc">Más recientes</option>
+        <option value="createdAt:asc">Más antiguos</option>
+        <option value="name:asc">Nombre (A-Z)</option>
+        <option value="name:desc">Nombre (Z-A)</option>
+        <option value="size:desc">Más pesados</option>
+        <option value="size:asc">Más livianos</option>
+      </select>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <p class="text-sm text-slate-500">Cargando…</p>
+  }
+
+  @if (vacio()) {
+    <div class="rounded-xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">
+      <p class="text-lg">Esta carpeta está vacía</p>
+      <p class="text-sm">Crea una carpeta o arrastra aquí archivos .txt y .md</p>
+    </div>
+  }
+
+  <!-- Carpetas -->
+  @if (carpetasVisibles().length > 0) {
+    <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Carpetas</h2>
+    <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      @for (c of carpetasVisibles(); track c._id) {
+        <div class="group flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-300">
+          <a [routerLink]="['/drive', c._id]" class="flex min-w-0 flex-1 items-center gap-2 text-sm font-medium text-slate-800">
+            <span class="text-xl">📁</span>
+            <span class="truncate">{{ c.name }}</span>
+          </a>
+          <div class="flex shrink-0 gap-0.5 text-sm opacity-60 group-hover:opacity-100">
+            <button type="button" class="rounded p-1 hover:bg-slate-100" title="Compartir" (click)="compartirCarpeta(c)">👥</button>
+            <button type="button" class="rounded p-1 hover:bg-slate-100" title="Renombrar" (click)="renombrarCarpeta(c)">✏️</button>
+            <button type="button" class="rounded p-1 hover:bg-slate-100" title="Mover" (click)="moverCarpeta(c)">➡️</button>
+            <button type="button" class="rounded p-1 hover:bg-red-50" title="Enviar a la papelera" (click)="carpetaALaPapelera(c)">🗑️</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Archivos -->
+  @if (archivos().length > 0) {
+    <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Archivos</h2>
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+          <tr>
+            <th class="px-4 py-2">Nombre</th>
+            <th class="px-4 py-2">Tipo</th>
+            <th class="px-4 py-2">Tamaño</th>
+            <th class="px-4 py-2">Creado</th>
+            <th class="px-4 py-2 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (a of archivos(); track a._id) {
+            <tr class="hover:bg-slate-50">
+              <td class="px-4 py-2">
+                <button type="button" class="flex items-center gap-2 text-left font-medium text-slate-800 hover:text-blue-700" (click)="archivoAbierto.set(a)">
+                  <span>{{ a.fileType === 'md' ? '📝' : '📄' }}</span>
+                  <span class="max-w-xs truncate">{{ a.name }}</span>
+                </button>
+              </td>
+              <td class="px-4 py-2 uppercase text-slate-500">{{ a.fileType }}</td>
+              <td class="px-4 py-2 text-slate-500">{{ formatBytes(a.size) }}</td>
+              <td class="px-4 py-2 text-slate-500">{{ formatDate(a.createdAt) }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-right">
+                <button type="button" class="rounded p-1 hover:bg-slate-100" title="Abrir" (click)="archivoAbierto.set(a)">👁️</button>
+                <button type="button" class="rounded p-1 hover:bg-slate-100" title="Descargar" (click)="descargar(a)">⬇️</button>
+                <button type="button" class="rounded p-1 hover:bg-slate-100" title="Compartir" (click)="compartirArchivo(a)">👥</button>
+                <button type="button" class="rounded p-1 hover:bg-slate-100" title="Renombrar" (click)="renombrarArchivo(a)">✏️</button>
+                <button type="button" class="rounded p-1 hover:bg-slate-100" title="Mover" (click)="moverArchivo(a)">➡️</button>
+                <button type="button" class="rounded p-1 hover:bg-red-50" title="Enviar a la papelera" (click)="archivoALaPapelera(a)">🗑️</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 flex items-center justify-between text-sm text-slate-600">
+      <span>{{ total() }} archivo(s)</span>
+      <div class="flex items-center gap-2">
+        <button type="button" class="rounded border border-slate-300 bg-white px-3 py-1 hover:bg-slate-100 disabled:opacity-40" [disabled]="pagina() <= 1" (click)="irAPagina(pagina() - 1)">Anterior</button>
+        <span>Página {{ pagina() }} de {{ totalPaginas() }}</span>
+        <button type="button" class="rounded border border-slate-300 bg-white px-3 py-1 hover:bg-slate-100 disabled:opacity-40" [disabled]="pagina() >= totalPaginas()" (click)="irAPagina(pagina() + 1)">Siguiente</button>
+      </div>
+    </div>
+  }
+</section>
+
+@if (archivoAbierto(); as a) {
+  <app-visor-archivo [archivo]="a" [puedeEditar]="true" (cerrar)="archivoAbierto.set(null)" (guardado)="cargar()" />
+}
+
+@if (paraCompartir(); as r) {
+  <app-compartir-modal [tipo]="r.tipo" [recursoId]="r.id" [nombre]="r.nombre" (cerrar)="paraCompartir.set(null)" />
+}
+
+@if (paraMover(); as r) {
+  <app-mover-modal
+    [tipo]="r.tipo === 'FILE' ? 'FILE' : 'FOLDER'"
+    [recursoId]="r.id"
+    [nombre]="r.nombre"
+    [ubicacionActual]="carpetaId()"
+    (moverA)="confirmarMovimiento($event)"
+    (cerrar)="paraMover.set(null)"
+  />
+}
