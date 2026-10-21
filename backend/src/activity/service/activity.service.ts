@@ -15,7 +15,7 @@ export class ActivityService {
         await this.model.create({ userId, actionActivity, resourceType, resourceId, detail }).catch(() => undefined);
     }
 
-    async consult(f: { userId?: string, actionActivity?: ActionActivity, from?: string; to?: string; page?: number; limit?: number }) {
+   async consult(f: { userId?: string, actionActivity?: ActionActivity, from?: string; to?: string; page?: number; limit?: number }) {
 
         const filter: Record<string, unknown> = { ...dateFilter(f.from, f.to) };
 
@@ -24,8 +24,13 @@ export class ActivityService {
 
         const page = f.page ?? 1;
         const limit = f.limit ?? 10;
+        
         const [items, total] = await Promise.all([
-            this.model.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
+            this.model.find(filter)
+                .populate('userId', 'firstName lastName email') 
+                .sort({ createdAt: -1 })
+                .skip((page - 1) * limit)
+                .limit(limit),
             this.model.countDocuments(filter),
         ]);
 

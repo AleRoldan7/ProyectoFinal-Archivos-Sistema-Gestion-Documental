@@ -66,6 +66,10 @@ export class Usuarios implements OnInit {
     this.form.reset({ firstName: '', lastName: '', email: '', password: '', rol: 'USUARIO' });
     this.form.controls.password.setValidators([Validators.required, Validators.minLength(5)]);
     this.form.controls.password.updateValueAndValidity();
+
+    this.form.controls.firstName.enable();
+    this.form.controls.lastName.enable();
+    this.form.controls.email.enable();
     this.modalAbierto.set(true);
   }
 
@@ -74,6 +78,10 @@ export class Usuarios implements OnInit {
     this.form.reset({ firstName: u.firstName, lastName: u.lastName, email: u.email, password: '', rol: u.rol });
     this.form.controls.password.setValidators([Validators.minLength(5)]);
     this.form.controls.password.updateValueAndValidity();
+
+    this.form.controls.firstName.disable();
+    this.form.controls.lastName.disable();
+    
     this.modalAbierto.set(true);
   }
 

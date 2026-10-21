@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { RestConst } from '../../shared/rest-api-const';
 import { UserResponse, UsuarioCambios, UsuarioDirectorio } from '../../models/user/user-response';
 import { UserRequest } from '../../models/user/user-request';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +13,19 @@ export class UserService {
   private readonly http = inject(HttpClient);
   private readonly url = new RestConst().getApiUrl() + "/users";
 
-  me() { return this.http.get<UserResponse>(`${this.url}/me`); }
+  private conIdUser(u: UserResponse): UserResponse {
+    return { ...u, idUser: u._id ?? u.idUser };
+  }
+
+  me() {
+    return this.http.get<UserResponse>(`${this.url}/me`).pipe(map((u) => this.conIdUser(u)));
+  }
 
   directorio() { return this.http.get<UsuarioDirectorio[]>(`${this.url}/directory`); }
 
-  todos() { return this.http.get<UserResponse[]>(`${this.url}/all-users`); }
+  todos() {
+    return this.http.get<UserResponse[]>(`${this.url}/all-users`).pipe(map((lista) => lista.map((u) => this.conIdUser(u))));
+  }
 
   crear(datos: UserRequest) { return this.http.post<UserResponse>(`${this.url}/create-user`, datos); }
 

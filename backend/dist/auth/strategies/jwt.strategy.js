@@ -26,7 +26,7 @@ let JwtStrategy = class JwtStrategy extends PassportStrategy(Strategy) {
         const user = await this.users.findById(payload.sub);
         if (!user || !user.stateUser)
             throw new UnauthorizedException();
-        return { idUser: user.id, email: user.email, rol: user.rol };
+        return { idUser: user._id.toString(), email: user.email, rol: user.rol };
     }
 };
 JwtStrategy = __decorate([

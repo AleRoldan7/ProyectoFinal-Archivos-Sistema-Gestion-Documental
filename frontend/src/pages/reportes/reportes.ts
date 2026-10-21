@@ -200,17 +200,25 @@ export class Reportes implements OnInit {
   consultar(): void {
     const def = this.seleccionado();
     const filtro: FiltroReporte = {};
+
     if (def.filtros.includes('from') && this.filtros.from) filtro.from = this.filtros.from;
     if (def.filtros.includes('to') && this.filtros.to) filtro.to = this.filtros.to;
     if (def.filtros.includes('limit')) filtro.limit = this.filtros.limit;
     if (def.filtros.includes('periodo')) filtro.periodo = this.filtros.periodo;
-    // solo el admin puede consultar a otro usuario; vacío = su propia cuenta
-    if (def.filtros.includes('usuario') && this.esAdmin && this.filtros.userId) filtro.userId = this.filtros.userId;
+
+    if (
+      def.filtros.includes('usuario') &&
+      this.esAdmin &&
+      this.filtros.userId &&
+      this.filtros.userId !== 'undefined' &&
+      this.filtros.userId !== 'null'
+    ) {
+      filtro.userId = this.filtros.userId;
+    }
 
     this.cargando.set(true);
     def.cargar(filtro).subscribe({
       next: (r) => {
-        // evita pintar la respuesta de un reporte que ya no está seleccionado
         if (this.seleccionado() !== def) return;
         this.filas.set(r);
         this.consultado.set(true);

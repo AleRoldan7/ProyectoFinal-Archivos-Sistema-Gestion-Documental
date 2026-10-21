@@ -101,4 +101,8 @@ export class Actividad implements OnInit {
         },
       });
   }
+
+  esUsuarioPopulado(userId: any): userId is { firstName: string, lastName: string, email: string } {
+    return userId && typeof userId === 'object' && 'firstName' in userId;
+  }
 }

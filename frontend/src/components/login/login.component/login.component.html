@@ -1,46 +1,54 @@
-<main class="login-page">
-  <section class="login-card">
-    <h1>Gestor de archivos</h1>
-    <p>Ingresa a tu cuenta para continuar.</p>
+<main class="flex min-h-screen items-center justify-center bg-slate-100 p-4">
+  <section class="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-bold text-slate-800">Gestor de archivos</h1>
+      <p class="mt-1 text-sm text-slate-500">Ingresa a tu cuenta para continuar.</p>
+    </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="submit()">
-      <label for="email">Correo electrónico</label>
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        placeholder="usuario@empresa.com"
-        autocomplete="username"
-      />
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="space-y-4">
+      <!-- Email -->
+      <div>
+        <label for="email" class="mb-1 block text-sm font-medium text-slate-700">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="usuario@empresa.com"
+          autocomplete="username"
+          class="w-full rounded-lg border border-slate-300 p-2.5 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        />
+        @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) {
+          <small class="mt-1 block text-xs text-red-600">Ingresa un correo electrónico válido.</small>
+        }
+      </div>
 
-      @if (
-        loginForm.controls.email.touched &&
-        loginForm.controls.email.invalid
-      ) {
-        <small>Ingresa un correo electrónico válido.</small>
-      }
+      <!-- Password -->
+      <div>
+        <label for="password" class="mb-1 block text-sm font-medium text-slate-700">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Tu contraseña"
+          autocomplete="current-password"
+          class="w-full rounded-lg border border-slate-300 p-2.5 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        />
+        @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+          <small class="mt-1 block text-xs text-red-600">La contraseña es obligatoria.</small>
+        }
+      </div>
 
-      <label for="password">Contraseña</label>
-      <input
-        id="password"
-        type="password"
-        formControlName="password"
-        placeholder="Tu contraseña"
-        autocomplete="current-password"
-      />
-
-      @if (
-        loginForm.controls.password.touched &&
-        loginForm.controls.password.invalid
-      ) {
-        <small>La contraseña es obligatoria.</small>
-      }
-
+      <!-- Error general -->
       @if (errorMessage()) {
-        <p class="error-message">{{ errorMessage() }}</p>
+        <p class="rounded-lg bg-red-50 p-2 text-sm text-red-600">{{ errorMessage() }}</p>
       }
 
-      <button type="submit" [disabled]="loading()">
+      <!-- Botón -->
+      <button
+        type="submit"
+        [disabled]="loading()"
+        class="w-full rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+      >
         {{ loading() ? 'Ingresando...' : 'Iniciar sesión' }}
       </button>
     </form>
