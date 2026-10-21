@@ -7,7 +7,7 @@ import { ParseObjectIdPipe } from "@nestjs/mongoose";
 @Controller()
 export class TrashController {
 
-    constructor(private readonly trashService: TrashService) { }
+    constructor(private readonly trashService: TrashService) {}
 
     @Delete('folders/:id')
     sendFolder(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {

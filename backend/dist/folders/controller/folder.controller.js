@@ -17,13 +17,19 @@ import { CreateFolderDTO } from '../dto/create-folder.dto.js';
 import { RenameFolderDTO } from '../dto/rename-folder.dto.js';
 import { MoveFolderDTO } from '../dto/move-folder.dto.js';
 import { FolderService } from '../service/folder-service.service.js';
+import { ActivityService } from '../../activity/service/activity.service.js';
+import { ActionActivity } from '../../common/enums/action-activity.enum.js';
 let FolderController = class FolderController {
     folders;
-    constructor(folders) {
+    activity;
+    constructor(folders, activity) {
         this.folders = folders;
+        this.activity = activity;
     }
-    create(user, dto) {
-        return this.folders.create(user.idUser, dto);
+    async create(user, dto) {
+        const carpeta = await this.folders.create(user.idUser, dto);
+        await this.activity.register(user.idUser, ActionActivity.CREATE_FOLDER, 'FOLDER', carpeta.id, carpeta.name);
+        return carpeta;
     }
     list(user, parentId) {
         return this.folders.findChildren(user.idUser, parentId);
@@ -31,11 +37,15 @@ let FolderController = class FolderController {
     getOne(user, id) {
         return this.folders.getWithPath(user.idUser, id);
     }
-    rename(user, id, dto) {
-        return this.folders.rename(user.idUser, id, dto.name);
+    async rename(user, id, dto) {
+        const carpeta = await this.folders.rename(user.idUser, id, dto.name);
+        await this.activity.register(user.idUser, ActionActivity.RENAME_FOLDER, 'FOLDER', id, carpeta.name);
+        return carpeta;
     }
-    move(user, id, dto) {
-        return this.folders.move(user.idUser, id, dto.parentId);
+    async move(user, id, dto) {
+        const carpeta = await this.folders.move(user.idUser, id, dto.parentId);
+        await this.activity.register(user.idUser, ActionActivity.MOVE_FOLDER, 'FOLDER', id, carpeta.name);
+        return carpeta;
     }
 };
 __decorate([
@@ -44,7 +54,7 @@ __decorate([
     __param(1, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, CreateFolderDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FolderController.prototype, "create", null);
 __decorate([
     Get(),
@@ -69,7 +79,7 @@ __decorate([
     __param(2, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, RenameFolderDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FolderController.prototype, "rename", null);
 __decorate([
     Patch(':id/move'),
@@ -78,11 +88,11 @@ __decorate([
     __param(2, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, MoveFolderDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FolderController.prototype, "move", null);
 FolderController = __decorate([
     Controller('folders'),
-    __metadata("design:paramtypes", [FolderService])
+    __metadata("design:paramtypes", [FolderService, ActivityService])
 ], FolderController);
 export { FolderController };
 //# sourceMappingURL=folder.controller.js.map

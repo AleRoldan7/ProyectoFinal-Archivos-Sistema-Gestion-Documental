@@ -14,13 +14,19 @@ import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { AuthService } from "../service/auth-service.service.js";
 import { Public } from "../../common/decorators/public.decorator.js";
 import { LoginDTO } from "../dto/login.dto.js";
+import { ActivityService } from "../../activity/service/activity.service.js";
+import { ActionActivity } from "../../common/enums/action-activity.enum.js";
 let AuthController = class AuthController {
     auth;
-    constructor(auth) {
+    activity;
+    constructor(auth, activity) {
         this.auth = auth;
+        this.activity = activity;
     }
-    login(loginDto) {
-        return this.auth.login(loginDto);
+    async login(loginDto) {
+        const response = await this.auth.login(loginDto);
+        await this.activity.register(response.user.idUser, ActionActivity.LOGIN, 'USER', response.user.idUser, `Inicio de sesión: ${response.user.email}`);
+        return response;
     }
 };
 __decorate([
@@ -30,11 +36,11 @@ __decorate([
     __param(0, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [LoginDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 AuthController = __decorate([
     Controller('auth'),
-    __metadata("design:paramtypes", [AuthService])
+    __metadata("design:paramtypes", [AuthService, ActivityService])
 ], AuthController);
 export { AuthController };
 //# sourceMappingURL=auth.controller.js.map

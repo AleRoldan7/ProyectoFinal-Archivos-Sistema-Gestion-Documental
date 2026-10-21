@@ -47,7 +47,6 @@ export class FileController {
         return this.files.findById(id);
     }
 
-    // CAMBIO: quien tiene permiso de lectura (no solo el dueño) puede descargar
     @Get(':id/download')
     async download(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
         await this.access.require(user.idUser, ResourceType.FILE, id, Permission.READ);

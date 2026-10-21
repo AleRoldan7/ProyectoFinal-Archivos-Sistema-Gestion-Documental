@@ -1,8 +1,10 @@
 import { AuthService } from "../service/auth-service.service.js";
 import { LoginDTO } from "../dto/login.dto.js";
+import { ActivityService } from "../../activity/service/activity.service.js";
 export declare class AuthController {
     private readonly auth;
-    constructor(auth: AuthService);
+    private readonly activity;
+    constructor(auth: AuthService, activity: ActivityService);
     login(loginDto: LoginDTO): Promise<{
         accessToken: string;
         tokenType: string;

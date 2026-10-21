@@ -3,9 +3,11 @@ import { CreateFolderDTO } from '../dto/create-folder.dto.js';
 import { RenameFolderDTO } from '../dto/rename-folder.dto.js';
 import { MoveFolderDTO } from '../dto/move-folder.dto.js';
 import { FolderService } from '../service/folder-service.service.js';
+import { ActivityService } from '../../activity/service/activity.service.js';
 export declare class FolderController {
     private readonly folders;
-    constructor(folders: FolderService);
+    private readonly activity;
+    constructor(folders: FolderService, activity: ActivityService);
     create(user: AuthUser, dto: CreateFolderDTO): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/folder.schema.js").Folder, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/folder.schema.js").Folder & {
         _id: import("mongoose").Types.ObjectId;
     } & {

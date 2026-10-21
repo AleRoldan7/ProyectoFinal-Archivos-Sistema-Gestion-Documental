@@ -7,11 +7,12 @@ import { Rol } from "../../common/enums/rol.enum.js";
 import { CreateUserDTO } from "../dto/create-user.dto.js";
 import { UpdateUserDTO } from "../dto/update-user.dto.js";
 import { StateUserDTO } from "../dto/state-user.dto.js";
+import { ActivityService } from "../../activity/service/activity.service.js";
 
 @Controller('users')
 export class UserController {
 
-    constructor(private readonly users: UserService) { }
+    constructor(private readonly users: UserService) {}
 
     @Get('me')
     me(@CurrentUser() user: AuthUser) {

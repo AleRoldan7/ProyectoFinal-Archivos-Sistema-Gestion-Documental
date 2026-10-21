@@ -15,13 +15,19 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';
 import { SharingService } from '../service/sharing.service.js';
 import { CreateShareDTO, UpdateShareDTO } from '../dto/share.dto.js';
+import { ActivityService } from '../../activity/service/activity.service.js';
+import { ActionActivity } from '../../common/enums/action-activity.enum.js';
 let SharingController = class SharingController {
     sharing;
-    constructor(sharing) {
+    activity;
+    constructor(sharing, activity) {
         this.sharing = sharing;
+        this.activity = activity;
     }
-    compartir(user, dto) {
-        return this.sharing.share(user.idUser, dto);
+    async compartir(user, dto) {
+        const compartido = await this.sharing.share(user.idUser, dto);
+        await this.activity.register(user.idUser, ActionActivity.SHARE, 'SHARE', compartido.id, dto.permission);
+        return compartido;
     }
     conmigo(user) {
         return this.sharing.sharedWithMe(user.idUser);
@@ -29,11 +35,15 @@ let SharingController = class SharingController {
     porMi(user) {
         return this.sharing.sharedByMe(user.idUser);
     }
-    cambiar(user, id, dto) {
-        return this.sharing.changePermission(user.idUser, id, dto);
+    async cambiar(user, id, dto) {
+        const actualizado = await this.sharing.changePermission(user.idUser, id, dto);
+        await this.activity.register(user.idUser, ActionActivity.CHANGE_PERMISSION, 'SHARE', id, dto.permission);
+        return actualizado;
     }
-    revocar(user, id) {
-        return this.sharing.revoke(user.idUser, id);
+    async revocar(user, id) {
+        const eliminado = await this.sharing.revoke(user.idUser, id);
+        await this.activity.register(user.idUser, ActionActivity.REVOKE_PERMISSION, 'SHARE', id);
+        return eliminado;
     }
 };
 __decorate([
@@ -42,7 +52,7 @@ __decorate([
     __param(1, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, CreateShareDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], SharingController.prototype, "compartir", null);
 __decorate([
     Get('with-me'),
@@ -65,7 +75,7 @@ __decorate([
     __param(2, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, UpdateShareDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], SharingController.prototype, "cambiar", null);
 __decorate([
     Delete(':id'),
@@ -73,11 +83,11 @@ __decorate([
     __param(1, Param('id', ParseObjectIdPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], SharingController.prototype, "revocar", null);
 SharingController = __decorate([
     Controller('shares'),
-    __metadata("design:paramtypes", [SharingService])
+    __metadata("design:paramtypes", [SharingService, ActivityService])
 ], SharingController);
 export { SharingController };
 //# sourceMappingURL=sharing.controller.js.map

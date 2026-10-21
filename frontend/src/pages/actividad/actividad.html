@@ -85,7 +85,13 @@
               {{ formatDate(a.createdAt) }}
             </td>
             @if (esAdmin) {
-             <td class="px-4 py-2 text-slate-800">{{ nombreUsuario(a.userId) }}</td>
+              <td class="px-4 py-2 text-slate-800">
+                @if ($any(a.userId).firstName) {
+                  {{ $any(a.userId).firstName }} {{ $any(a.userId).lastName }}
+                } @else {
+                  —
+                }
+              </td>
             }
             <td class="px-4 py-2 font-medium text-slate-800">
               {{ nombreAccion(a.actionActivity) }}

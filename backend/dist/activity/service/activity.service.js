@@ -32,7 +32,11 @@ let ActivityService = class ActivityService {
         const page = f.page ?? 1;
         const limit = f.limit ?? 10;
         const [items, total] = await Promise.all([
-            this.model.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
+            this.model.find(filter)
+                .populate('userId', 'firstName lastName email')
+                .sort({ createdAt: -1 })
+                .skip((page - 1) * limit)
+                .limit(limit),
             this.model.countDocuments(filter),
         ]);
         return { items, total, page, limit };

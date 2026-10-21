@@ -1,9 +1,11 @@
 import type { AuthUser } from '../../common/interfaces/auth-user.interface.js';
 import { SharingService } from '../service/sharing.service.js';
 import { CreateShareDTO, UpdateShareDTO } from '../dto/share.dto.js';
+import { ActivityService } from '../../activity/service/activity.service.js';
 export declare class SharingController {
     private readonly sharing;
-    constructor(sharing: SharingService);
+    private readonly activity;
+    constructor(sharing: SharingService, activity: ActivityService);
     compartir(user: AuthUser, dto: CreateShareDTO): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/share.schema.js").Share, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/share.schema.js").Share & {
         _id: import("mongoose").Types.ObjectId;
     } & {

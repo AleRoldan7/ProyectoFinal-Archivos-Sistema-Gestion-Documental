@@ -4,14 +4,19 @@ import type { AuthUser } from '../../common/interfaces/auth-user.interface.js';
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';
 import { SharingService } from '../service/sharing.service.js';
 import { CreateShareDTO, UpdateShareDTO } from '../dto/share.dto.js';
+import { ActivityService } from '../../activity/service/activity.service.js';
+import { ActionActivity } from '../../common/enums/action-activity.enum.js';
 
 @Controller('shares')
 export class SharingController {
-  constructor(private readonly sharing: SharingService) {}
+
+  constructor(private readonly sharing: SharingService, private readonly activity: ActivityService) { }
 
   @Post()
-  compartir(@CurrentUser() user: AuthUser, @Body() dto: CreateShareDTO) {
-    return this.sharing.share(user.idUser, dto);
+  async compartir(@CurrentUser() user: AuthUser, @Body() dto: CreateShareDTO) {
+    const compartido = await this.sharing.share(user.idUser, dto);
+    await this.activity.register(user.idUser, ActionActivity.SHARE, 'SHARE', compartido.id, dto.permission);
+    return compartido;
   }
 
   @Get('with-me')
@@ -25,12 +30,16 @@ export class SharingController {
   }
 
   @Patch(':id')
-  cambiar(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string, @Body() dto: UpdateShareDTO) {
-    return this.sharing.changePermission(user.idUser, id, dto);
+  async cambiar(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string, @Body() dto: UpdateShareDTO) {
+    const actualizado = await this.sharing.changePermission(user.idUser, id, dto);
+    await this.activity.register(user.idUser, ActionActivity.CHANGE_PERMISSION, 'SHARE', id, dto.permission);
+    return actualizado;
   }
 
   @Delete(':id')
-  revocar(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
-    return this.sharing.revoke(user.idUser, id);
+  async revocar(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
+    const eliminado = await this.sharing.revoke(user.idUser, id);
+    await this.activity.register(user.idUser, ActionActivity.REVOKE_PERMISSION, 'SHARE', id);
+    return eliminado;
   }
 }
