@@ -83,14 +83,12 @@ export class FolderService {
         return folder.save();
     }
 
-    async move(ownerId: string, id: string, newParentId: string | null) {
+        async move(ownerId: string, id: string, newParentId: string | null) {
         const folder = await this.getOwned(ownerId, id);
 
         let dest: FolderDocument | null = null;
         if (newParentId) {
-            await this.access.require(ownerId, ResourceType.FOLDER, newParentId, Permission.EDIT);
-            dest = await this.folderModel.findOne({ _id: newParentId, deletedAt: null });
-            if (!dest) throw new NotFoundException('Carpeta destino no encontrada');
+            dest = await this.getOwned(ownerId, newParentId);
 
             const intoItself = dest._id.equals(folder._id);
             const intoDescendant = dest.ancestors.some((a) => a.equals(folder._id));
@@ -118,6 +116,7 @@ export class FolderService {
                     },
                 },
             }],
+            { updatePipeline: true },
         );
 
         folder.parentId = dest?._id ?? null;

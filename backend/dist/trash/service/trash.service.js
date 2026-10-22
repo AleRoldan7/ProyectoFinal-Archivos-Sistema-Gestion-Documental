@@ -77,7 +77,7 @@ let TrashService = class TrashService {
                         $concatArrays: [prefijo, { $slice: ['$ancestors', { $indexOfArray: ['$ancestors', root._id] }, 10000] }],
                     },
                 },
-            }]);
+            }], { updatePipeline: true });
         await this.fileModel.updateMany({ ownerId, deletedAt: lote, folderId: { $in: ids } }, { $set: { deletedAt: null } });
         root.set({ deletedAt: null, parentId, ancestors: prefijo });
         await root.save();

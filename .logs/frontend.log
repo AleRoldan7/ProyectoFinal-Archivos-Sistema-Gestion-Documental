@@ -1,0 +1,62 @@
+❯ Building...
+✔ Building...
+Browser bundles     
+Initial chunk files  | Names               |  Raw size
+main.js              | main                |  25.70 kB | 
+styles.css           | styles              |  23.65 kB | 
+chunk-LBEWRWHE.js    | -                   |   3.38 kB | 
+chunk-55QU3ZX6.js    | -                   |   1.09 kB | 
+
+                     | Initial total       |  53.82 kB
+
+Lazy chunk files     | Names               |  Raw size
+chunk-KFQQCPTF.js    | mi-unidad           |  74.49 kB | 
+chunk-SD4TYCBM.js    | reportes            |  37.10 kB | 
+chunk-H6MAGRWJ.js    | compartidos-conmigo |  29.66 kB | 
+chunk-2MLNMMEB.js    | usuarios            |  27.43 kB | 
+chunk-J33FBZGI.js    | actividad           |  24.01 kB | 
+chunk-ZCPDE5MF.js    | -                   |  16.77 kB | 
+chunk-2GI4FNTX.js    | compartidos-por-mi  |  14.17 kB | 
+chunk-24LD4SP4.js    | papelera            |  13.19 kB | 
+chunk-ONL7P6UC.js    | -                   |   4.73 kB | 
+chunk-XMXXXTCJ.js    | -                   |   2.26 kB | 
+chunk-TRCOLHEA.js    | -                   |   1.63 kB | 
+chunk-3ISHGS7L.js    | -                   |   1.58 kB | 
+chunk-OMGAENAQ.js    | -                   |   1.56 kB | 
+chunk-CSTBEEZH.js    | -                   |   1.33 kB | 
+chunk-HFX33G66.js    | -                   | 805 bytes | 
+...and 1 more lazy chunks files. Use "--verbose" to show all the files.
+
+
+Server bundles      
+Initial chunk files  | Names               |  Raw size
+main.server.mjs      | main.server         |  27.02 kB | 
+chunk-CZTJDRFI.mjs   | -                   |   3.41 kB | 
+server.mjs           | server              |   1.84 kB | 
+chunk-L3TZL5BH.mjs   | -                   |   1.13 kB | 
+polyfills.server.mjs | polyfills.server    | 268 bytes | 
+
+Lazy chunk files     | Names               |  Raw size
+chunk-373CQPXJ.mjs   | mi-unidad           |  74.53 kB | 
+chunk-OB73VHG2.mjs   | reportes            |  37.15 kB | 
+chunk-N4HFHGN4.mjs   | compartidos-conmigo |  29.70 kB | 
+chunk-KYFOPFR3.mjs   | usuarios            |  27.47 kB | 
+chunk-WITJLJPH.mjs   | actividad           |  24.05 kB | 
+chunk-XEZSKV73.mjs   | -                   |  16.81 kB | 
+chunk-TNZAQQS4.mjs   | compartidos-por-mi  |  14.21 kB | 
+chunk-HOWXV5C4.mjs   | papelera            |  13.22 kB | 
+chunk-JX5Y4UAJ.mjs   | -                   |   4.77 kB | 
+chunk-VBAKHOEG.mjs   | -                   |   2.30 kB | 
+chunk-4YDSTFVL.mjs   | -                   |   1.67 kB | 
+chunk-4GGD3CRN.mjs   | -                   |   1.61 kB | 
+chunk-PLOMXNW4.mjs   | -                   |   1.60 kB | 
+chunk-JFHRYT7S.mjs   | -                   |   1.36 kB | 
+chunk-CT52GC64.mjs   | -                   | 840 bytes | 
+...and 1 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [4.717 seconds] - 2026-10-22T05:09:45.230Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  ➜  Local:   http://localhost:4200/
+NG02801: Angular detected that `HttpClient` is not configured to use `fetch` APIs. It's strongly recommended to enable `fetch` for applications that use Server-Side Rendering for better performance and compatibility. To enable `fetch`, add the `withFetch()` to the `provideHttpClient()` call at the root of the application.

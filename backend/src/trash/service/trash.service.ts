@@ -11,8 +11,8 @@ import { ActionActivity } from "../../common/enums/action-activity.enum.js";
 export class TrashService {
 
     constructor(@InjectModel(Folder.name) private readonly folderModel: Model<FolderDocument>,
-                @InjectModel(FileEntry.name) private readonly fileModel: Model<FileEntryDocument>,
-                private readonly gridFs: GridFsService, private readonly activityService: ActivityService) {}
+        @InjectModel(FileEntry.name) private readonly fileModel: Model<FileEntryDocument>,
+        private readonly gridFs: GridFsService, private readonly activityService: ActivityService) { }
 
 
 
@@ -55,7 +55,7 @@ export class TrashService {
         };
     }
 
-    /* RESTAURAR CARPETAS Y ARCHIVOS */
+    /* RESTAURAR CARPETAS  */
     async restoredFolder(ownerId: string, id: string) {
 
         const root = await this.folderModel.findOne({ _id: id, ownerId, deletedAt: { $ne: null } });
@@ -82,6 +82,7 @@ export class TrashService {
                     },
                 },
             }],
+            { updatePipeline: true },
         );
         await this.fileModel.updateMany({ ownerId, deletedAt: lote, folderId: { $in: ids } }, { $set: { deletedAt: null } });
 
@@ -93,7 +94,7 @@ export class TrashService {
     }
 
     async restoredFile(ownerId: string, id: string) {
-        
+
         const file = await this.fileModel.findOne({ _id: id, ownerId, deletedAt: { $ne: null } });
         if (!file) throw new NotFoundException('Archivo no encontrado en la papelera');
 

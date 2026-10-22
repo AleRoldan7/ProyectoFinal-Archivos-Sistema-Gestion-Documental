@@ -1,0 +1,85 @@
+
+> backend@0.0.1 start
+> nest start
+
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +26ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +3ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mObserveModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +16ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseCoreModule dependencies initialized[39m[38;5;3m +21ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +6ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUserModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mActivityModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mReportsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTrashModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFolderModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSharingModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFileModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +11ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUserController {/users}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/me, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/directory, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/create-user, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/all-users, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id/update, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id/state, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFolderController {/folders}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/folders, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/folders, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/folders/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/folders/:id/rename, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/folders/:id/move, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFileController {/files}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/upload-file, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/list-file, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/:id/download, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/:id/content, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/:id/rename, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/:id/move, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSharingController {/shares}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/shares, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/shares/with-me, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/shares/by-me, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/shares/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/shares/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mActivityController {/activity}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/activity, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mReportsController {/reports}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/files/by-type, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/files/by-date, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/files/most-operated, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/users/top-files, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/users/most-shared, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/shares/most-shared-files, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/shares/by-user, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/shares/received, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/activity/user, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/activity/by-type, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/activity/by-period, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/reports/activity/top-actions, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mTrashController {/}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/folders/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/files/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/trash, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/trash/folders/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/trash/files/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/trash/folders/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/trash/files/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[ObserveAgentWorker] [39m[32mObserve agent worker initialized.[39m
+[32m[Nest] 16636  - [39m21/10/2026, 11:09:47 p.m. [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +34ms[39m
+[31m[Nest] 16636  - [39m21/10/2026, 11:10:12 p.m. [31m  ERROR[39m [38;5;3m[ObserveAgentWorker] [39m[31mError: Telemetry rate-limited (429) - the account may be out of credits or over budget. Pausing sends for 60 minute(s); batches in the meantime are dropped.[39m
