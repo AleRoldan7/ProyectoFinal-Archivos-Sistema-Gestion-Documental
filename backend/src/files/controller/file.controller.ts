@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Put, Query, StreamableFile, UploadedFile, UseInterceptors, } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, StreamableFile, UploadedFile, UseInterceptors, } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import type { AuthUser } from '../../common/interfaces/auth-user.interface.js';
@@ -13,6 +13,8 @@ import { Permission, ResourceType } from '../../common/enums/shraing.enum.js';
 import { AccessService } from '../../sharing/service/access.service.js';
 import { ActivityService } from '../../activity/service/activity.service.js';
 import { ActionActivity } from '../../common/enums/action-activity.enum.js';
+import { CommentService } from '../service/comment.service.js';
+import { CreateCommentDTO } from '../dto/create-comment.dto.js';
 
 const uploadInterceptor = FileInterceptor('file', {
     limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 },
@@ -26,7 +28,8 @@ const uploadInterceptor = FileInterceptor('file', {
 @Controller('files')
 export class FileController {
 
-    constructor(private readonly files: FileService, private readonly access: AccessService, private readonly activity: ActivityService) { }
+    constructor(private readonly files: FileService, private readonly access: AccessService, private readonly activity: ActivityService,
+        private readonly comments: CommentService) { }
 
     @Post('upload-file')
     @UseInterceptors(uploadInterceptor)
@@ -80,5 +83,22 @@ export class FileController {
         const actualizado = await this.files.move(user.idUser, id, dto.folderId);
         await this.activity.register(user.idUser, ActionActivity.MOVE_FILE, 'FILE', id, actualizado.name);
         return actualizado;
+    }
+
+    @Get(':id/comments')
+    listComments(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
+        return this.comments.list(user.idUser, id);
+    }
+
+    @Post(':id/comments')
+    addComment(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string, @Body() dto: CreateCommentDTO) {
+        return this.comments.create(user.idUser, id, dto.text);
+    }
+
+    @Delete(':id/comments/:commentId')
+    async removeComment(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string,
+        @Param('commentId', ParseObjectIdPipe) commentId: string) {
+        await this.comments.remove(user.idUser, id, commentId);
+        return { ok: true };
     }
 }

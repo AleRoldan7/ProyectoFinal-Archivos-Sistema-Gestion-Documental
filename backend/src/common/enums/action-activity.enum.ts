@@ -14,6 +14,8 @@ export enum ActionActivity {
     SHARE = 'SHARE',
     CHANGE_PERMISSION = 'CHANGE_PERMISSION',
     REVOKE_PERMISSION = 'REVOKE_PERMISSION',
+    ADD_COMMENT = 'ADD_COMMENT',
+    DELETE_COMMENT = 'DELETE_COMMENT',
 }
 
 export type ResourceType = 'FOLDER' | 'FILE' | 'SHARE' | 'USER';

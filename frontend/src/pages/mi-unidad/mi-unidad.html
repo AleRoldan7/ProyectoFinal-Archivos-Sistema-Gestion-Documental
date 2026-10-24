@@ -140,7 +140,7 @@
 </section>
 
 @if (archivoAbierto(); as a) {
-  <app-visor-archivo [archivo]="a" [puedeEditar]="true" (cerrar)="archivoAbierto.set(null)" (guardado)="cargar()" />
+  <app-visor-archivo [archivo]="a" [puedeEditar]="true" [puedeComentar]="true" (cerrar)="archivoAbierto.set(null)" (guardado)="cargar()" />
 }
 
 @if (paraCompartir(); as r) {

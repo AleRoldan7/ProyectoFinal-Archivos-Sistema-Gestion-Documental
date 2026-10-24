@@ -7,11 +7,14 @@ import { FileService } from '../service/file-service.service.js';
 import { ListFileQueryDTO } from '../dto/list-file-query.dto.js';
 import { AccessService } from '../../sharing/service/access.service.js';
 import { ActivityService } from '../../activity/service/activity.service.js';
+import { CommentService } from '../service/comment.service.js';
+import { CreateCommentDTO } from '../dto/create-comment.dto.js';
 export declare class FileController {
     private readonly files;
     private readonly access;
     private readonly activity;
-    constructor(files: FileService, access: AccessService, activity: ActivityService);
+    private readonly comments;
+    constructor(files: FileService, access: AccessService, activity: ActivityService, comments: CommentService);
     upload(user: AuthUser, file: Express.Multer.File, dto: UploadFileDTO): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../schemas/file.schema.js").FileEntry, {}, import("mongoose").DefaultSchemaOptions> & import("../schemas/file.schema.js").FileEntry & {
         _id: import("mongoose").Types.ObjectId;
     } & {
@@ -108,4 +111,29 @@ export declare class FileController {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>>;
+    listComments(user: AuthUser, id: string): Promise<{
+        _id: string;
+        text: string;
+        createdAt: Date | undefined;
+        author: {
+            _id: string;
+            firstName: string;
+            lastName: string;
+        };
+        puedeEliminar: boolean;
+    }[]>;
+    addComment(user: AuthUser, id: string, dto: CreateCommentDTO): Promise<{
+        _id: string;
+        text: string;
+        createdAt: Date | undefined;
+        author: {
+            _id: string;
+            firstName: string;
+            lastName: string;
+        };
+        puedeEliminar: boolean;
+    }>;
+    removeComment(user: AuthUser, id: string, commentId: string): Promise<{
+        ok: boolean;
+    }>;
 }

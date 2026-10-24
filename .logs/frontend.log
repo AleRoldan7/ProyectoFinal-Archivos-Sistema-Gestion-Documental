@@ -3,19 +3,19 @@
 Browser bundles     
 Initial chunk files  | Names               |  Raw size
 main.js              | main                |  25.70 kB | 
-styles.css           | styles              |  23.65 kB | 
+styles.css           | styles              |  24.29 kB | 
 chunk-LBEWRWHE.js    | -                   |   3.38 kB | 
 chunk-55QU3ZX6.js    | -                   |   1.09 kB | 
 
-                     | Initial total       |  53.82 kB
+                     | Initial total       |  54.46 kB
 
 Lazy chunk files     | Names               |  Raw size
-chunk-KFQQCPTF.js    | mi-unidad           |  74.49 kB | 
+chunk-X5VIDMY3.js    | mi-unidad           |  74.57 kB | 
 chunk-SD4TYCBM.js    | reportes            |  37.10 kB | 
-chunk-H6MAGRWJ.js    | compartidos-conmigo |  29.66 kB | 
+chunk-KUA3PJI5.js    | compartidos-conmigo |  30.29 kB | 
 chunk-2MLNMMEB.js    | usuarios            |  27.43 kB | 
+chunk-TMURFNZM.js    | -                   |  25.24 kB | 
 chunk-J33FBZGI.js    | actividad           |  24.01 kB | 
-chunk-ZCPDE5MF.js    | -                   |  16.77 kB | 
 chunk-2GI4FNTX.js    | compartidos-por-mi  |  14.17 kB | 
 chunk-24LD4SP4.js    | papelera            |  13.19 kB | 
 chunk-ONL7P6UC.js    | -                   |   4.73 kB | 
@@ -30,19 +30,19 @@ chunk-HFX33G66.js    | -                   | 805 bytes |
 
 Server bundles      
 Initial chunk files  | Names               |  Raw size
-main.server.mjs      | main.server         |  27.02 kB | 
+main.server.mjs      | main.server         |  27.18 kB | 
 chunk-CZTJDRFI.mjs   | -                   |   3.41 kB | 
 server.mjs           | server              |   1.84 kB | 
 chunk-L3TZL5BH.mjs   | -                   |   1.13 kB | 
 polyfills.server.mjs | polyfills.server    | 268 bytes | 
 
 Lazy chunk files     | Names               |  Raw size
-chunk-373CQPXJ.mjs   | mi-unidad           |  74.53 kB | 
+chunk-W4EAIIAP.mjs   | mi-unidad           |  74.61 kB | 
 chunk-OB73VHG2.mjs   | reportes            |  37.15 kB | 
-chunk-N4HFHGN4.mjs   | compartidos-conmigo |  29.70 kB | 
+chunk-2DICE7IQ.mjs   | compartidos-conmigo |  30.33 kB | 
 chunk-KYFOPFR3.mjs   | usuarios            |  27.47 kB | 
+chunk-TWBNOA6U.mjs   | -                   |  25.28 kB | 
 chunk-WITJLJPH.mjs   | actividad           |  24.05 kB | 
-chunk-XEZSKV73.mjs   | -                   |  16.81 kB | 
 chunk-TNZAQQS4.mjs   | compartidos-por-mi  |  14.21 kB | 
 chunk-HOWXV5C4.mjs   | papelera            |  13.22 kB | 
 chunk-JX5Y4UAJ.mjs   | -                   |   4.77 kB | 
@@ -54,7 +54,7 @@ chunk-JFHRYT7S.mjs   | -                   |   1.36 kB |
 chunk-CT52GC64.mjs   | -                   | 840 bytes | 
 ...and 1 more lazy chunks files. Use "--verbose" to show all the files.
 
-Application bundle generation complete. [4.717 seconds] - 2026-10-22T05:09:45.230Z
+Application bundle generation complete. [7.012 seconds] - 2026-10-24T05:36:39.535Z
 
 Watch mode enabled. Watching for file changes...
 NOTE: Raw file sizes do not reflect development server per-request transformations.

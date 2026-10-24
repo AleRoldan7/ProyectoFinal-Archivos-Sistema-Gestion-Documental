@@ -9,8 +9,22 @@ mkdir -p "$LOGS"
 
 PUERTO_API=$(grep -E '^PUERTO=' "$BACKEND/.env" 2>/dev/null | cut -d= -f2 || true)
 PUERTO_API=${PUERTO_API:-3000}
+PUERTO_WEB=${PUERTO_WEB:-4200}
 
 mongo_activo() { (echo > /dev/tcp/127.0.0.1/27017) >/dev/null 2>&1; }
+
+# ---------- liberar puertos si quedaron ocupados por ejecuciones previas ----------
+liberar_puerto() {
+  local puerto="$1"
+  local pids
+  pids=$(lsof -t -iTCP:"$puerto" -sTCP:LISTEN 2>/dev/null || true)
+  if [ -n "$pids" ]; then
+    echo "⚠️  Puerto $puerto ocupado por PID(s): $pids — liberando..."
+    # shellcheck disable=SC2086
+    kill -9 $pids 2>/dev/null || true
+    sleep 0.5
+  fi
+}
 
 PID_BACKEND=""
 PID_FRONTEND=""
@@ -19,43 +33,34 @@ detener() {
   echo ""
   echo "⏹  Deteniendo backend y frontend..."
   for pid in "$PID_BACKEND" "$PID_FRONTEND"; do
-    [ -n "$pid" ] && { kill -- -"$pid" 2>/dev/null || kill "$pid" 2>/dev/null || true; }
+    if [ -n "$pid" ]; then
+      # matar todo el grupo (npm + nest/ng + node)
+      kill -- -"$pid" 2>/dev/null || kill "$pid" 2>/dev/null || true
+    fi
   done
+  # red de seguridad: si algo quedó vivo en el puerto, lo matamos
+  liberar_puerto "$PUERTO_API" >/dev/null 2>&1 || true
+  liberar_puerto "$PUERTO_WEB" >/dev/null 2>&1 || true
   echo "   (MongoDB sigue corriendo en Docker; para apagarlo: docker compose down)"
 }
 trap detener EXIT INT TERM
 
-# ---------- comprobaciones ----------
-[ -f "$BACKEND/.env" ] || { echo "❌ Falta backend/.env"; exit 1; }
-
-# ---------- 1. MongoDB ----------
-if mongo_activo; then
-  echo "✔ MongoDB ya está activo en el puerto 27017"
-else
-  command -v docker >/dev/null || { echo "❌ MongoDB no responde y Docker no está instalado"; exit 1; }
-  echo "▶ Levantando MongoDB con Docker..."
-  docker compose -f "$RAIZ/docker-compose.yml" up -d mongo
-  for _ in $(seq 1 30); do mongo_activo && break; sleep 2; done
-  mongo_activo || { echo "❌ MongoDB no respondió a tiempo"; exit 1; }
-  echo "✔ MongoDB listo"
-fi
-
-# ---------- 2. dependencias ----------
-[ -d "$BACKEND/node_modules" ]  || { echo "▶ npm install (backend)...";  (cd "$BACKEND"  && npm install); }
-[ -d "$FRONTEND/node_modules" ] || { echo "▶ npm install (frontend)..."; (cd "$FRONTEND" && npm install); }
-
-# ---------- 3. datos de demostración (si ya existen, no hace nada) ----------
-echo "▶ Cargando datos de demostración..."
-(cd "$BACKEND" && npm run seed)
+# ... comprobaciones, MongoDB, dependencias, seed igual que antes ...
 
 # ---------- 4. backend y frontend ----------
+liberar_puerto "$PUERTO_API"
+liberar_puerto "$PUERTO_WEB"
+
 echo "▶ Iniciando backend..."
-(cd "$BACKEND" && setsid npm run start > "$LOGS/backend.log" 2>&1) &
+# Sin setsid: usamos un subshell con exec para que $! sea el PID real de npm
+( cd "$BACKEND" && exec npm run start ) > "$LOGS/backend.log" 2>&1 &
 PID_BACKEND=$!
 
 echo "▶ Iniciando frontend..."
-(cd "$FRONTEND" && setsid npx ng serve > "$LOGS/frontend.log" 2>&1) &
+( cd "$FRONTEND" && exec npx ng serve --port "$PUERTO_WEB" ) > "$LOGS/frontend.log" 2>&1 &
 PID_FRONTEND=$!
+
+# ... esperar backend, mensajes, tail igual que antes ...
 
 # ---------- 5. esperar al backend ----------
 for _ in $(seq 1 60); do

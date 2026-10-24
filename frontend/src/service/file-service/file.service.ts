@@ -5,6 +5,7 @@ import { FileQuery } from '../../models/file/file-query';
 import { FilePage } from '../../models/file/file-page';
 import { toParams } from '../../utils/params';
 import { FileResponse } from '../../models/file/file-response';
+import { Comentario } from '../../models/comment/comentario';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class FileService {
     return this.httpClient.get(`${this.apiUrl.getApiUrl()}/files/${id}/download`, {responseType: 'text'});
   }
 
-   upload(file: File, folderId: string | null) {
+  upload(file: File, folderId: string | null) {
     const body = new FormData();
     body.append('file', file, file.name);
     if (folderId) body.append('folderId', folderId);
@@ -34,8 +35,8 @@ export class FileService {
     return this.httpClient.put<FileResponse>(`${this.apiUrl.getApiUrl()}/files/${id}/content`, body);
   }
 
-  rename(id: string, name: string) { 
-    return this.httpClient.patch<FileResponse>(`${this.apiUrl.getApiUrl()}/files/${id}/rename`, { name }); 
+  rename(id: string, name: string) {
+    return this.httpClient.patch<FileResponse>(`${this.apiUrl.getApiUrl()}/files/${id}/rename`, { name });
   }
 
   move(id: string, folderId: string | null) {
@@ -44,5 +45,17 @@ export class FileService {
 
   metadatos(id: string) {
     return this.httpClient.get<FileResponse>(`${this.apiUrl.getApiUrl()}/files/${id}`);
+  }
+
+  listComments(fileId: string) {
+    return this.httpClient.get<Comentario[]>(`${this.apiUrl.getApiUrl()}/files/${fileId}/comments`);
+  }
+
+  addComment(fileId: string, text: string) {
+    return this.httpClient.post<Comentario>(`${this.apiUrl.getApiUrl()}/files/${fileId}/comments`, { text });
+  }
+
+  deleteComment(fileId: string, commentId: string) {
+    return this.httpClient.delete<{ ok: boolean }>(`${this.apiUrl.getApiUrl()}/files/${fileId}/comments/${commentId}`);
   }
 }

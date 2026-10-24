@@ -27,6 +27,7 @@ export class ExploradorCarpeta {
 
   archivoAbierto = signal<FileResponse | null>(null);
   puedeEditar = signal(false);
+  puedeComentar = signal(false);
 
   constructor() {
     // effect se ejecuta cada vez que cambian los signals involucrados (como folderId)
@@ -36,6 +37,7 @@ export class ExploradorCarpeta {
       
       if (id) {
         this.puedeEditar.set(perm === 'EDIT');
+        this.puedeComentar.set(perm === 'EDIT' || perm === 'COMMENT');
         this.cargarContenido(id);
       }
     }, { allowSignalWrites: true }); // Necesario para poder escribir en otros signals

@@ -49,5 +49,5 @@
 }
 
 @if (archivoAbierto(); as a) {
-  <app-visor-archivo [archivo]="a" [puedeEditar]="puedeEditar()" (cerrar)="archivoAbierto.set(null)" />
+  <app-visor-archivo [archivo]="a" [puedeEditar]="puedeEditar()" [puedeComentar]="puedeComentar()" (cerrar)="archivoAbierto.set(null)" />
 }

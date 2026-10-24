@@ -124,9 +124,10 @@ export class FileService {
         return { file, stream: this.gridFs.download(file.gridFsId) };
     }
 
-    async replaceContent(id: string, upload: Express.Multer.File | undefined) {
-        const file = await this.getOwned(id);
+       async replaceContent(id: string, upload: Express.Multer.File | undefined) {
         this.validateUpload(upload);
+        const file = await this.fileModel.findOne({ _id: id, deletedAt: null });
+        if (!file) throw new NotFoundException('Archivo no encontrado');
 
         const newId = await this.gridFs.upload(upload!.buffer, file.name, file.mimeType);
         const oldId = file.gridFsId;

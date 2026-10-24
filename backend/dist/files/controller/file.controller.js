@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Put, Query, StreamableFile, UploadedFile, UseInterceptors, } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, StreamableFile, UploadedFile, UseInterceptors, } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';
@@ -24,6 +24,8 @@ import { Permission, ResourceType } from '../../common/enums/shraing.enum.js';
 import { AccessService } from '../../sharing/service/access.service.js';
 import { ActivityService } from '../../activity/service/activity.service.js';
 import { ActionActivity } from '../../common/enums/action-activity.enum.js';
+import { CommentService } from '../service/comment.service.js';
+import { CreateCommentDTO } from '../dto/create-comment.dto.js';
 const uploadInterceptor = FileInterceptor('file', {
     limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 },
     fileFilter: (request, file, cb) => {
@@ -36,10 +38,12 @@ let FileController = class FileController {
     files;
     access;
     activity;
-    constructor(files, access, activity) {
+    comments;
+    constructor(files, access, activity, comments) {
         this.files = files;
         this.access = access;
         this.activity = activity;
+        this.comments = comments;
     }
     async upload(user, file, dto) {
         const creado = await this.files.upload(user.idUser, dto.folderId, file);
@@ -78,6 +82,16 @@ let FileController = class FileController {
         const actualizado = await this.files.move(user.idUser, id, dto.folderId);
         await this.activity.register(user.idUser, ActionActivity.MOVE_FILE, 'FILE', id, actualizado.name);
         return actualizado;
+    }
+    listComments(user, id) {
+        return this.comments.list(user.idUser, id);
+    }
+    addComment(user, id, dto) {
+        return this.comments.create(user.idUser, id, dto.text);
+    }
+    async removeComment(user, id, commentId) {
+        await this.comments.remove(user.idUser, id, commentId);
+        return { ok: true };
     }
 };
 __decorate([
@@ -142,9 +156,36 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, MoveFileDTO]),
     __metadata("design:returntype", Promise)
 ], FileController.prototype, "move", null);
+__decorate([
+    Get(':id/comments'),
+    __param(0, CurrentUser()),
+    __param(1, Param('id', ParseObjectIdPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], FileController.prototype, "listComments", null);
+__decorate([
+    Post(':id/comments'),
+    __param(0, CurrentUser()),
+    __param(1, Param('id', ParseObjectIdPipe)),
+    __param(2, Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, CreateCommentDTO]),
+    __metadata("design:returntype", void 0)
+], FileController.prototype, "addComment", null);
+__decorate([
+    Delete(':id/comments/:commentId'),
+    __param(0, CurrentUser()),
+    __param(1, Param('id', ParseObjectIdPipe)),
+    __param(2, Param('commentId', ParseObjectIdPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", Promise)
+], FileController.prototype, "removeComment", null);
 FileController = __decorate([
     Controller('files'),
-    __metadata("design:paramtypes", [FileService, AccessService, ActivityService])
+    __metadata("design:paramtypes", [FileService, AccessService, ActivityService,
+        CommentService])
 ], FileController);
 export { FileController };
 //# sourceMappingURL=file.controller.js.map

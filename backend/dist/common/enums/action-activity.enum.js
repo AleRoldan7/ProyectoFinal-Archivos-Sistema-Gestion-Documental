@@ -15,5 +15,7 @@ export var ActionActivity;
     ActionActivity["SHARE"] = "SHARE";
     ActionActivity["CHANGE_PERMISSION"] = "CHANGE_PERMISSION";
     ActionActivity["REVOKE_PERMISSION"] = "REVOKE_PERMISSION";
+    ActionActivity["ADD_COMMENT"] = "ADD_COMMENT";
+    ActionActivity["DELETE_COMMENT"] = "DELETE_COMMENT";
 })(ActionActivity || (ActionActivity = {}));
 //# sourceMappingURL=action-activity.enum.js.map

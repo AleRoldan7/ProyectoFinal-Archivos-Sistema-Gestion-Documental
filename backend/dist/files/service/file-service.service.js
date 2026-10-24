@@ -133,8 +133,10 @@ let FileService = FileService_1 = class FileService {
         return { file, stream: this.gridFs.download(file.gridFsId) };
     }
     async replaceContent(id, upload) {
-        const file = await this.getOwned(id);
         this.validateUpload(upload);
+        const file = await this.fileModel.findOne({ _id: id, deletedAt: null });
+        if (!file)
+            throw new NotFoundException('Archivo no encontrado');
         const newId = await this.gridFs.upload(upload.buffer, file.name, file.mimeType);
         const oldId = file.gridFsId;
         try {

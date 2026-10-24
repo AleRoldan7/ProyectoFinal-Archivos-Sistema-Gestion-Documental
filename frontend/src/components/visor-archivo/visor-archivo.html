@@ -23,4 +23,33 @@
   } @else {
     <pre class="max-h-96 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3 font-mono text-sm text-slate-800">{{ texto() || '(archivo vacío)' }}</pre>
   }
+
+  <section class="mt-5 border-t border-slate-200 pt-4">
+    <h3 class="mb-2 text-sm font-semibold text-slate-700">Comentarios ({{ comentarios().length }})</h3>
+
+    @if (comentarios().length === 0) {
+      <p class="mb-3 text-sm text-slate-500">Sin comentarios todavía.</p>
+    }
+
+    <ul class="mb-3 max-h-56 space-y-2 overflow-auto">
+      @for (c of comentarios(); track c._id) {
+        <li class="rounded-lg bg-slate-50 p-2 text-sm">
+          <div class="flex items-center justify-between gap-2 text-xs text-slate-500">
+            <span>{{ c.author.firstName }} {{ c.author.lastName }} · {{ c.createdAt | date: 'short' }}</span>
+            @if (c.puedeEliminar) {
+              <button type="button" class="text-red-600 hover:underline" (click)="eliminarComentario(c)">Eliminar</button>
+            }
+          </div>
+          <p class="mt-1 whitespace-pre-wrap text-slate-800">{{ c.text }}</p>
+        </li>
+      }
+    </ul>
+
+    @if (puedeComentar()) {
+      <div class="flex gap-2">
+        <textarea class="flex-1 rounded-lg border border-slate-300 p-2 text-sm" rows="2" maxlength="1000" placeholder="Escribe un comentario…" [(ngModel)]="nuevoComentario"></textarea>
+        <button type="button" class="self-end rounded-lg bg-blue-700 px-3 py-2 text-sm text-white hover:bg-blue-800 disabled:opacity-50" [disabled]="enviandoComentario() || !nuevoComentario.trim()" (click)="enviarComentario()">Comentar</button>
+      </div>
+    }
+  </section>
 </app-modal>

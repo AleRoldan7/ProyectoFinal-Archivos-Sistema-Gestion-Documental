@@ -30,6 +30,7 @@ export class CompartidosConmigo implements OnInit {
   busqueda = signal('');
   archivoAbierto = signal<FileResponse | null>(null);
   puedeEditar = signal(false);
+  puedeComentar = signal(false);
 
   carpetaAbierta = signal<{ id: string, name: string, permission: string } | null>(null);
 
@@ -57,6 +58,7 @@ export class CompartidosConmigo implements OnInit {
       this.archivosApi.metadatos(s.resourceId).subscribe({
         next: (archivo) => {
           this.puedeEditar.set(s.permission === 'EDIT');
+          this.puedeComentar.set(s.permission === 'EDIT' || s.permission === 'COMMENT');
           this.archivoAbierto.set(archivo);
         },
         error: fallo,
