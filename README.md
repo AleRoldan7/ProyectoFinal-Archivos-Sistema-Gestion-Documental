@@ -302,9 +302,4 @@ Solo se aceptan archivos `.txt` y `.md`, de hasta 5 MB.
 | Las pantallas se ven sin estilos | Revisa la configuración de Tailwind: `.postcssrc.json` con `@tailwindcss/postcss` y `@import "tailwindcss";` en `src/styles.css`; reinicia `ng serve` después de cambiarlo. |
 | Los scripts `.sh` no se ejecutan | `chmod +x iniciar-dev.sh reiniciar-datos.sh`. Los registros están en `.logs/`. |
 
-## Seguridad
 
-- No subas `backend/.env` a git.
-- Usa un `JWT_SECRET` propio y largo, distinto en cada entorno.
-- Cambia la contraseña del administrador antes de desplegar en un servidor real.
-- Las cuentas de demostración (`Demo12345`) son solo para pruebas.
